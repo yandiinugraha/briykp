@@ -1,0 +1,289 @@
+basePath: /api
+definitions:
+  models.MKelasProspens:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kode:
+        type: string
+      nama:
+        type: string
+    type: object
+  models.MKelompokProspens:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kode:
+        type: string
+      nama:
+        type: string
+    type: object
+  models.MStatusBpjs:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kode:
+        type: string
+      nama:
+        type: string
+    type: object
+  models.MStatusBrilife:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      kode:
+        type: string
+      nama:
+        type: string
+    type: object
+  models.TPembayaranPremi:
+    properties:
+      created_at:
+        type: string
+      file_bukti_bayar:
+        type: string
+      id_status_pembayaran:
+        type: string
+      no_nota_dinas:
+        type: string
+      tanggal:
+        type: string
+      total_premi:
+        type: number
+    type: object
+  models.TPeserta:
+    properties:
+      created_at:
+        type: string
+      id_kelas:
+        type: integer
+      id_kelompok:
+        type: integer
+      id_peserta:
+        type: string
+      jenis_mutasi:
+        type: string
+      kelas:
+        $ref: '#/definitions/models.MKelasProspens'
+      kelompok:
+        $ref: '#/definitions/models.MKelompokProspens'
+      nama_peserta:
+        type: string
+      nik_bri:
+        type: string
+      no_kartu_brilife:
+        type: string
+      status_bpjs:
+        $ref: '#/definitions/models.MStatusBpjs'
+      status_bpjs_id:
+        type: integer
+      status_brilife:
+        $ref: '#/definitions/models.MStatusBrilife'
+      status_brilife_id:
+        type: integer
+      tgl_phk:
+        type: string
+      tmt_pertanggungan:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.TRefundPremi:
+    properties:
+      created_at:
+        type: string
+      file_invoice_refund:
+        type: string
+      id_refund:
+        type: string
+      nominal_refund:
+        type: number
+      status_jurnal:
+        type: string
+      tanggal:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Backend API Service for YKP BRI Prospens System Maker-Checker-Signer
+  title: YKP BRI Prospens API
+  version: "1.0"
+paths:
+  /finance/pembayaran:
+    get:
+      consumes:
+      - application/json
+      description: Fetches full payment database logs for finance preview.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.TPembayaranPremi'
+            type: array
+      summary: Get All Pembayaran
+      tags:
+      - Keuangan
+    post:
+      consumes:
+      - application/json
+      description: Endpoint untuk mencatat pembayaran premi/nota dinas.
+      parameters:
+      - description: Data Pembayaran
+        in: body
+        name: pembayaran
+        required: true
+        schema:
+          $ref: '#/definitions/models.TPembayaranPremi'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.TPembayaranPremi'
+      summary: Record Pembayaran Premi
+      tags:
+      - Keuangan
+  /finance/refund:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint untuk pencatatan Refund Premi.
+      parameters:
+      - description: Data Refund
+        in: body
+        name: refund
+        required: true
+        schema:
+          $ref: '#/definitions/models.TRefundPremi'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.TRefundPremi'
+      summary: Record Refund Premi
+      tags:
+      - Keuangan
+  /peserta:
+    get:
+      consumes:
+      - application/json
+      description: Fetches all active and inactive participant data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.TPeserta'
+            type: array
+      summary: Get all peserta
+      tags:
+      - Peserta
+    post:
+      consumes:
+      - application/json
+      description: Creates a new participant record for YKP manual input
+      parameters:
+      - description: Data Peserta
+        in: body
+        name: peserta
+        required: true
+        schema:
+          $ref: '#/definitions/models.TPeserta'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.TPeserta'
+      summary: Create new peserta
+      tags:
+      - Peserta
+  /peserta/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Fetch comprehensive details of a specific participant
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TPeserta'
+      summary: Get peserta by ID
+      tags:
+      - Peserta
+    put:
+      consumes:
+      - application/json
+      description: Update participant details by ID
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Data Peserta
+        in: body
+        name: peserta
+        required: true
+        schema:
+          $ref: '#/definitions/models.TPeserta'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TPeserta'
+      summary: Update peserta
+      tags:
+      - Peserta
+  /upload/peserta:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Mengunggah dan mem-parsing file XLSX berisi data peserta secara
+        massal.
+      parameters:
+      - description: Excel file (.xlsx)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Upload Excel Data Kepesertaan (HC BRI)
+      tags:
+      - Peserta
+swagger: "2.0"
