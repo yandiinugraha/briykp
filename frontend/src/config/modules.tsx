@@ -50,17 +50,18 @@ export const MODULES: ErpModule[] = [
                 groupIcon: <ShieldCheck size={16} />,
                 items: [
                     {
-                        label: 'Data Kepesertaan (Maker)',
-                        icon: <Users size={18} />,
-                        children: [
-                            { label: 'Info Kepesertaan Saya', path: '/kepesertaan/profile' },
-                            { label: 'Data Peserta', path: '/kepesertaan/data-kepesertaan' },
-                        ],
+                        label: 'Dashboard Iuran',
+                        icon: <Activity size={18} />,
+                        path: '/kepesertaan/iuran/settlement',
                     },
                     {
-                        label: 'Approval Data Kepesertaan',
-                        icon: <CheckSquare size={18} />,
-                        path: '/kepesertaan/approval-kepesertaan',
+                        label: 'Data Kepesertaan',
+                        icon: <Users size={18} />,
+                        children: [
+                            { label: 'Data Peserta', path: '/kepesertaan/data-kepesertaan' },
+                            { label: 'Approval Data Kepesertaan', path: '/kepesertaan/approval-kepesertaan' },
+                            { label: 'Info Kepesertaan Saya', path: '/kepesertaan/profile' },
+                        ],
                     },
                     {
                         label: 'Iuran Peserta',
@@ -68,7 +69,7 @@ export const MODULES: ErpModule[] = [
                         children: [
                             { label: 'Data Iuran', path: '/kepesertaan/iuran/data' },
                             { label: 'Approval Iuran', path: '/kepesertaan/iuran/approval' },
-                            { label: 'Settlement Iuran', path: '/kepesertaan/iuran/settlement' },
+                            { label: 'Data Iuran Detail', path: '/kepesertaan/iuran/history' },
                             { label: 'Proses Anggota Baru', path: '/kepesertaan/iuran/new-member' },
                             { label: 'Proses Anggota Non-Iuran', path: '/kepesertaan/iuran/missing' },
                             { label: 'Tinjau Data Ganda/Update', path: '/kepesertaan/iuran/duplicate' },

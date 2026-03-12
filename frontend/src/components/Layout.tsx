@@ -22,7 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const [openGroup, setOpenGroup] = useState<string | null>(null);
+    const [openGroups, setOpenGroups] = useState<string[]>([]);
     const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
     const [globalSearch, setGlobalSearch] = useState('');
     const [notifications, setNotifications] = useState<any[]>([]);
@@ -43,43 +43,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return mod || null;
     }, [location.pathname]);
 
-    // ─── AUTO-OPEN MENUS BASED ON PATH ─────────────────────────────
+    // ─── AUTO-OPEN LARGE GROUPS BY DEFAULT ────────────────────────
+    useEffect(() => {
+        const allGroups = MODULES.flatMap(m => m.menus.map(g => g.groupLabel));
+        setOpenGroups(allGroups);
+        // Close all sub-menus by default as requested
+        setOpenSubMenus([]);
+    }, []);
+
+    // Ensure current group is always open when navigating
     useEffect(() => {
         const path = location.pathname;
-        if (path.startsWith('/kepesertaan')) {
-            setOpenGroup('Kepesertaan');
-            // find which sub-menu
-            const segments = path.split('/');
-            if (segments.length >= 3) {
-                const featureSlug = segments[2]; // e.g. 'iuran', 'tht', etc.
-                const map: Record<string, string> = {
-                    iuran: 'Iuran Peserta',
-                    tht: 'Pembayaran Manfaat THT',
-                    distribusi: 'Distribusi Pengembangan',
-                    phk: 'PHK Normal → Prospens',
-                    nonaktif: 'Penonaktifan Peserta',
-                };
-                if (map[featureSlug]) {
-                    setOpenSubMenus(prev => prev.includes(map[featureSlug]) ? prev : [...prev, map[featureSlug]]);
-                }
-            }
-        } else if (path.startsWith('/investasi')) {
-            setOpenGroup('Investasi');
-            const segments = path.split('/');
-            if (segments.length >= 3) {
-                const featureSlug = segments[2];
-                const map: Record<string, string> = {
-                    obligasi: 'Obligasi',
-                    saham: 'Saham',
-                };
-                if (map[featureSlug]) {
-                    setOpenSubMenus(prev => prev.includes(map[featureSlug]) ? prev : [...prev, map[featureSlug]]);
-                }
-            }
-        } else if (['/approval', '/finance', '/upload', '/audit'].includes(path)) {
-            setOpenGroup('Operasional & Sistem');
-        } else if (path === '/dashboard') {
-            // don't close menus on dashboard
+        let groupToOpen = '';
+        if (path.startsWith('/kepesertaan')) groupToOpen = 'KEPESERTAAN';
+        else if (path.startsWith('/investasi')) groupToOpen = 'INVESTASI';
+        else if (['/approval', '/finance', '/upload', '/audit'].includes(path) || path.startsWith('/operasional')) groupToOpen = 'OPERASIONAL & SISTEM';
+
+        if (groupToOpen) {
+            setOpenGroups(prev => prev.includes(groupToOpen) ? prev : [...prev, groupToOpen]);
         }
     }, [location.pathname]);
 
@@ -121,7 +102,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     // ─── HELPERS ────────────────────────────────────────────────────
     const toggleGroup = (groupLabel: string) => {
-        setOpenGroup(prev => prev === groupLabel ? null : groupLabel);
+        setOpenGroups(prev => prev.includes(groupLabel) ? prev.filter(g => g !== groupLabel) : [...prev, groupLabel]);
     };
 
     const toggleSubMenu = (label: string) => {
@@ -195,7 +176,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     // ─── RENDER MENU GROUP ──────────────────────────────────────────
     const renderMenuGroup = (group: MenuGroup) => {
-        const isOpen = openGroup === group.groupLabel;
+        const isOpen = openGroups.includes(group.groupLabel);
         const isGroupActive = group.items.some(item => {
             if (item.path) return isPathActive(item.path);
             if (item.children) return item.children.some(c => isPathActive(c.path));

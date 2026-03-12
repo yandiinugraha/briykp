@@ -61,11 +61,7 @@ import {
   ObligasiJatuhTempo, ObligasiLaporan
 } from './pages/investasi/Obligasi';
 
-import {
-  SahamProposal, SahamTransaksi, SahamSettlement, SahamAkuntansi,
-  SahamLikuiditas, SahamValuasi, SahamAkuntansiLanjutan,
-  SahamCorporateAction, SahamLaporan
-} from './pages/investasi/Saham';
+import Saham from './pages/investasi/Saham';
 
 const pageVariants = {
   initial: { opacity: 0, x: 10 },
@@ -149,6 +145,7 @@ const AppContent = () => {
           <Route path="/kepesertaan/iuran/missing" element={<Page pageKey="iuran-missing"><IuranMissing /></Page>} />
           <Route path="/kepesertaan/iuran/duplicate" element={<Page pageKey="iuran-duplicate"><IuranDuplicate /></Page>} />
           <Route path="/kepesertaan/iuran/settlement" element={<Page pageKey="iuran-settlement"><SettlementIuran /></Page>} />
+          <Route path="/kepesertaan/iuran/history" element={<Page pageKey="iuran-history"><SettlementIuran defaultTab="history" /></Page>} />
 
           {/* ─── KEPESERTAAN: Pembayaran Manfaat THT ──────────── */}
           <Route path="/kepesertaan/tht/input" element={<Page pageKey="tht-input"><ThtInput /></Page>} />
@@ -205,15 +202,15 @@ const AppContent = () => {
           <Route path="/investasi/obligasi/laporan" element={<Page pageKey="obligasi-laporan"><ObligasiLaporan /></Page>} />
 
           {/* ─── INVESTASI: Saham ─────────────────────────────── */}
-          <Route path="/investasi/saham/proposal" element={<Page pageKey="saham-proposal"><SahamProposal /></Page>} />
-          <Route path="/investasi/saham/transaksi" element={<Page pageKey="saham-transaksi"><SahamTransaksi /></Page>} />
-          <Route path="/investasi/saham/settlement" element={<Page pageKey="saham-settlement"><SahamSettlement /></Page>} />
-          <Route path="/investasi/saham/akuntansi" element={<Page pageKey="saham-akuntansi"><SahamAkuntansi /></Page>} />
-          <Route path="/investasi/saham/likuiditas" element={<Page pageKey="saham-likuiditas"><SahamLikuiditas /></Page>} />
-          <Route path="/investasi/saham/valuasi" element={<Page pageKey="saham-valuasi"><SahamValuasi /></Page>} />
-          <Route path="/investasi/saham/akuntansi-lanjutan" element={<Page pageKey="saham-akuntansi-lanjutan"><SahamAkuntansiLanjutan /></Page>} />
-          <Route path="/investasi/saham/corporate-action" element={<Page pageKey="saham-corporate-action"><SahamCorporateAction /></Page>} />
-          <Route path="/investasi/saham/laporan" element={<Page pageKey="saham-laporan"><SahamLaporan /></Page>} />
+          <Route path="/investasi/saham/proposal" element={<Page pageKey="saham-proposal"><Saham defaultTab="proposal" /></Page>} />
+          <Route path="/investasi/saham/transaksi" element={<Page pageKey="saham-transaksi"><Saham defaultTab="transaksi" /></Page>} />
+          <Route path="/investasi/saham/settlement" element={<Page pageKey="saham-settlement"><Saham defaultTab="dashboard" /></Page>} />
+          <Route path="/investasi/saham/akuntansi" element={<Page pageKey="saham-akuntansi"><Saham defaultTab="dashboard" /></Page>} />
+          <Route path="/investasi/saham/likuiditas" element={<Page pageKey="saham-likuiditas"><Saham defaultTab="dashboard" /></Page>} />
+          <Route path="/investasi/saham/valuasi" element={<Page pageKey="saham-valuasi"><Saham defaultTab="dashboard" /></Page>} />
+          <Route path="/investasi/saham/akuntansi-lanjutan" element={<Page pageKey="saham-akuntansi-lanjutan"><Saham defaultTab="dashboard" /></Page>} />
+          <Route path="/investasi/saham/corporate-action" element={<Page pageKey="saham-corporate-action"><Saham defaultTab="corporate-action" /></Page>} />
+          <Route path="/investasi/saham/laporan" element={<Page pageKey="saham-laporan"><Saham defaultTab="dashboard" /></Page>} />
 
           {/* ─── NEW ERP MODULES (DUMMIES) ───────────────────── */}
           <Route path="/purchase/:slug" element={<Page pageKey="purchase-dummy"><DummyPage title="Modul Pembelian (Purchase)" /></Page>} />

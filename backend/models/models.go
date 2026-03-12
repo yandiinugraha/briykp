@@ -341,6 +341,69 @@ type TInvestmentTransaction struct {
 	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
 
+// --- SAHAM SPECIFIC TABLES ---
+
+type MSahamMaster struct {
+	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	KodeSaham      string    `gorm:"type:varchar(10);unique;not null" json:"kode_saham"`
+	NamaEmiten     string    `gorm:"type:varchar(150);not null" json:"nama_emiten"`
+	Sektor         string    `gorm:"type:varchar(100)" json:"sektor"`
+	IsUniverse     bool      `gorm:"default:false" json:"is_universe"`
+	StatusApproval string    `gorm:"type:varchar(30);default:'APPROVED'" json:"status_approval"`
+	LastPrice      float64   `gorm:"type:decimal(15,2);default:0" json:"last_price"`
+	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt      time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
+
+type TSahamProposal struct {
+	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	ProposalNo     string    `gorm:"type:varchar(50);unique;not null" json:"proposal_no"`
+	TglProposal    time.Time `gorm:"type:date;not null" json:"tgl_proposal"`
+	KodeSaham      string    `gorm:"type:varchar(10);not null" json:"kode_saham"`
+	TipeTransaksi  string    `gorm:"type:varchar(20);not null" json:"tipe_transaksi"` // BELI, JUAL
+	JenisDKP       string    `gorm:"type:varchar(50)" json:"jenis_dkp"`              // Dana Kepesertaan
+	JenisBook      string    `gorm:"type:varchar(50)" json:"jenis_book"`             // Trading, Available for Sale, HTM
+	RangeHargaBeli float64   `gorm:"type:decimal(15,2)" json:"range_harga_beli"`
+	RangeHargaJual float64   `gorm:"type:decimal(15,2)" json:"range_harga_jual"`
+	JumlahLembar   int64     `gorm:"type:bigint" json:"jumlah_lembar"`
+	StatusApproval string    `gorm:"type:varchar(30);default:'PENDING'" json:"status_approval"`
+	MakerID        string    `gorm:"type:varchar(50)" json:"maker_id"`
+	CheckerID      *string   `gorm:"type:varchar(50)" json:"checker_id"`
+	SignerID       *string   `gorm:"type:varchar(50)" json:"signer_id"`
+	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
+type TSahamTransaction struct {
+	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	ProposalID     *uint     `gorm:"index" json:"proposal_id"`
+	TransactionNo  string    `gorm:"type:varchar(50);unique;not null" json:"transaction_no"`
+	TglTransaksi   time.Time `gorm:"type:date;not null" json:"tgl_transaksi"`
+	KodeSaham      string    `gorm:"type:varchar(10);not null" json:"kode_saham"`
+	TipeTransaksi  string    `gorm:"type:varchar(20);not null" json:"tipe_transaksi"` // BELI, JUAL
+	JumlahLembar   int64     `gorm:"type:bigint" json:"jumlah_lembar"`
+	HargaTransaksi float64   `gorm:"type:decimal(15,2)" json:"harga_transaksi"`
+	FeeBroker      float64   `gorm:"type:decimal(15,2)" json:"fee_broker"`
+	TotalNominal   float64   `gorm:"type:decimal(18,2)" json:"total_nominal"`
+	Hpp            float64   `gorm:"type:decimal(15,2)" json:"hpp"`            // Avg Cost per share
+	IndikasiProfit float64   `gorm:"type:decimal(18,2)" json:"indikasi_profit"` // for SELL
+	Sekuritas      string    `gorm:"type:varchar(150)" json:"sekuritas"`
+	JenisDKP       string    `gorm:"type:varchar(50)" json:"jenis_dkp"`
+	JenisBook      string    `gorm:"type:varchar(50)" json:"jenis_book"`
+	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
+type TSahamCorporateAction struct {
+	ID               uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	TglAction        time.Time `gorm:"type:date;not null" json:"tgl_action"`
+	KodeSaham        string    `gorm:"type:varchar(10);not null" json:"kode_sahm"`
+	JenisAction      string    `gorm:"type:varchar(50)" json:"jenis_action"` // DIVIDEN_CASH, STOCK_SPLIT, etc
+	RasioAsal        int       `json:"rasio_asal"`                            // 1
+	RasioBaru        int       `json:"rasio_baru"`                            // 2 (for split 1:2)
+	NominalPerLembar float64   `gorm:"type:decimal(15,2)" json:"nominal_per_lembar"`
+	StatusApproval   string    `gorm:"type:varchar(30);default:'PENDING'" json:"status_approval"`
+	CreatedAt        time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
 // -------------------------------------------------------------------------
 // 6. AUDIT TRAIL TABLE
 // -------------------------------------------------------------------------
@@ -439,3 +502,8 @@ func (TNotification) TableName() string { return "t_notification" }
 
 func (TInvestmentProposal) TableName() string    { return "t_investment_proposal" }
 func (TInvestmentTransaction) TableName() string { return "t_investment_transaction" }
+
+func (MSahamMaster) TableName() string          { return "m_saham_master" }
+func (TSahamProposal) TableName() string        { return "t_saham_proposal" }
+func (TSahamTransaction) TableName() string    { return "t_saham_transaction" }
+func (TSahamCorporateAction) TableName() string { return "t_saham_corporate_action" }

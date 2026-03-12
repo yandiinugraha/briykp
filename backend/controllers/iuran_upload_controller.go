@@ -561,7 +561,7 @@ func ApproveNewMember(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Peserta baru berhasil di-approve & ditambahkan ke database master."})
 }
 
-// GetIuranSettlement returns summary of approved iuran batches for dashboard/settlement menu
+// GetIuranSettlement returns summary of iuran batches for dashboard/settlement menu
 func GetIuranSettlement(c *fiber.Ctx) error {
 	var results []struct {
 		Bulan          int     `json:"bulan"`
@@ -573,28 +573,103 @@ func GetIuranSettlement(c *fiber.Ctx) error {
 		Status         string  `json:"status"`
 	}
 
-	// Subquery to get approved THT
-	thtQuery := database.DB.Table("t_iuran_upload").
-		Select("bulan, tahun, SUM(total_nominal) as total_tht, SUM(total_rows) as count_tht").
-		Where("jenis_iuran = 'THT' AND status_approval = 'APPROVED'").
-		Group("bulan, tahun")
+	// We'll show all data grouped by month/year regardless of status for the dashboard
+	// but with a flag or aggregate
+	query := `
+		SELECT 
+			bulan, 
+			tahun, 
+			SUM(CASE WHEN jenis_iuran = 'THT' THEN total_nominal ELSE 0 END) as total_tht,
+			SUM(CASE WHEN jenis_iuran = 'PROSPENS' THEN total_nominal ELSE 0 END) as total_prospens,
+			SUM(CASE WHEN jenis_iuran = 'THT' THEN total_rows ELSE 0 END) as count_tht,
+			SUM(CASE WHEN jenis_iuran = 'PROSPENS' THEN total_rows ELSE 0 END) as count_prospens,
+			MAX(status_approval) as status
+		FROM t_iuran_upload
+		GROUP BY bulan, tahun
+		ORDER BY tahun DESC, bulan DESC
+	`
 
-	// Subquery to get approved PROSPENS
-	prosQuery := database.DB.Table("t_iuran_upload").
-		Select("bulan, tahun, SUM(total_nominal) as total_prospens, SUM(total_rows) as count_prospens").
-		Where("jenis_iuran = 'PROSPENS' AND status_approval = 'APPROVED'").
-		Group("bulan, tahun")
-
-	// Join them
-	err := database.DB.Table("(?) as tht", thtQuery).
-		Select("tht.bulan, tht.tahun, tht.total_tht, pros.total_prospens, tht.count_tht, pros.count_prospens, 'APPROVED' as status").
-		Joins("JOIN (?) as pros ON tht.bulan = pros.bulan AND tht.tahun = pros.tahun", prosQuery).
-		Order("tht.tahun DESC, tht.bulan DESC").
-		Scan(&results).Error
+	err := database.DB.Raw(query).Scan(&results).Error
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengambil data settlement"})
 	}
 
 	return c.JSON(results)
+}
+
+// GetParticipantIuranHistory returns all iuran records for a specific NIK
+func GetParticipantIuranHistory(c *fiber.Ctx) error {
+	nik := c.Params("nik")
+	
+	var results []struct {
+		Bulan          int       `json:"bulan"`
+		Tahun          int       `json:"tahun"`
+		JenisIuran     string    `json:"jenis_iuran"`
+		NominalIuran   float64   `json:"nominal_iuran"`
+		Keterangan     string    `json:"keterangan"`
+		StatusApproval string    `json:"status_approval"`
+		CreatedAt      time.Time `json:"created_at"`
+	}
+
+	err := database.DB.Table("t_iuran_upload_detail as d").
+		Select("u.bulan, u.tahun, u.jenis_iuran, d.nominal_iuran, d.keterangan, u.status_approval, d.created_at").
+		Joins("JOIN t_iuran_upload as u ON d.upload_id = u.id").
+		Where("d.nik_bri = ?", nik).
+		Order("u.tahun DESC, u.bulan DESC").
+		Scan(&results).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengambil history iuran peserta"})
+	}
+
+	return c.JSON(results)
+}
+
+// GetIuranReport returns summary totals grouped by month/year for reporting
+func GetIuranReport(c *fiber.Ctx) error {
+	type ReportItem struct {
+		Bulan        int     `json:"bulan"`
+		Tahun        int     `json:"tahun"`
+		JenisIuran   string  `json:"jenis_iuran"`
+		TotalNominal float64 `json:"total_nominal"`
+		TotalRows    int     `json:"total_rows"`
+	}
+
+	var results []ReportItem
+	err := database.DB.Table("t_iuran_upload").
+		Select("bulan, tahun, jenis_iuran, SUM(total_nominal) as total_nominal, SUM(total_rows) as total_rows").
+		Group("bulan, tahun, jenis_iuran").
+		Order("tahun DESC, bulan DESC").
+		Scan(&results).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengambil report iuran"})
+	}
+
+	return c.JSON(results)
+}
+
+// TruncateIuranData clears all iuran-related data for testing
+func TruncateIuranData(c *fiber.Ctx) error {
+	tx := database.DB.Begin()
+	tables := []string{
+		"t_iuran_penampungans",
+		"t_iuran_discrepancies",
+		"t_iuran_upload_details",
+		"t_iuran_upload",
+	}
+
+	for _, table := range tables {
+		if err := tx.Exec(fmt.Sprintf("DELETE FROM %s", table)).Error; err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengosongkan tabel " + table})
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal commit pengosongan data"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Semua data iuran berhasil dikosongkan (Fresh Slate)"})
 }

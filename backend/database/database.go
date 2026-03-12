@@ -67,6 +67,10 @@ func ConnectDB() {
 		&models.TPhkUploadDetail{},
 		&models.TInvestmentProposal{},
 		&models.TInvestmentTransaction{},
+		&models.MSahamMaster{},
+		&models.TSahamProposal{},
+		&models.TSahamTransaction{},
+		&models.TSahamCorporateAction{},
 	)
 
 	seedData()

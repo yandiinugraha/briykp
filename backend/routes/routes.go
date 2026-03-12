@@ -73,6 +73,9 @@ func Setup(app *fiber.App) {
 	kepesertaan.Get("/iuran/discrepancy/:bulan/:tahun", controllers.GetIuranDiscrepancies)
 	kepesertaan.Get("/iuran/penampungan/:bulan/:tahun", controllers.GetIuranPenampungan)
 	kepesertaan.Get("/iuran/settlement", controllers.GetIuranSettlement)
+	kepesertaan.Get("/iuran/history/:nik", controllers.GetParticipantIuranHistory)
+	kepesertaan.Get("/iuran/report", controllers.GetIuranReport)
+	kepesertaan.Delete("/iuran/truncate", controllers.TruncateIuranData)
 
 	// PHK Upload
 	kepesertaan.Post("/phk/upload", controllers.UploadPhkFile)
@@ -105,6 +108,18 @@ func Setup(app *fiber.App) {
 	investasi.Post("/proposals/:id/approve", controllers.ApproveInvestmentProposal)
 	investasi.Get("/transactions", controllers.GetInvestmentTransactions)
 	investasi.Post("/transactions/upload", controllers.UploadInvestmentTransaction)
+
+	// Saham Specific
+	saham := investasi.Group("/saham")
+	saham.Get("/master", controllers.GetStocks)
+	saham.Post("/master", controllers.CreateStock)
+	saham.Put("/master/:id", controllers.UpdateStock)
+	saham.Get("/proposals", controllers.GetSahamProposals)
+	saham.Post("/proposals/upload", controllers.UploadSahamProposal)
+	saham.Get("/transactions", controllers.GetSahamTransactions)
+	saham.Post("/transactions/upload", controllers.UploadSahamTransaction)
+	saham.Post("/action", controllers.CreateCorporateAction)
+	saham.Get("/portfolio", controllers.GetSahamPortfolio)
 
 	// Master Data (Helper for Front-end)
 	master := protected.Group("/master")
