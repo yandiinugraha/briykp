@@ -1,0 +1,77 @@
+ALTER TABLE t_peserta
+ADD COLUMN no_kk VARCHAR(50),
+ADD COLUMN nik VARCHAR(50),
+ADD COLUMN tempat_lahir VARCHAR(100),
+ADD COLUMN tgl_lahir DATE,
+ADD COLUMN jns_kel VARCHAR(10),
+ADD COLUMN st_kawin VARCHAR(50),
+ADD COLUMN alamat TEXT,
+ADD COLUMN rt VARCHAR(10),
+ADD COLUMN rw VARCHAR(10),
+ADD COLUMN kd_pos VARCHAR(10),
+ADD COLUMN kd_kec VARCHAR(50),
+ADD COLUMN al_kec VARCHAR(100),
+ADD COLUMN kd_desa VARCHAR(50),
+ADD COLUMN al_desa VARCHAR(100),
+ADD COLUMN no_telp VARCHAR(20),
+ADD COLUMN email VARCHAR(100),
+ADD COLUMN st_warga VARCHAR(50),
+ADD COLUMN npwp VARCHAR(50),
+ADD COLUMN no_paspor VARCHAR(50),
+ADD COLUMN faskes_opsi VARCHAR(50),
+ADD COLUMN nm_faskes1 VARCHAR(150),
+ADD COLUMN nm_fasgigi VARCHAR(150),
+ADD COLUMN tambah_info TEXT;
+
+CREATE TABLE t_pasangan (
+    id_pasangan INT PRIMARY KEY AUTO_INCREMENT,
+    id_peserta VARCHAR(50) NOT NULL,
+    nama_pasangan VARCHAR(150),
+    nik_pasangan VARCHAR(50),
+    no_kk VARCHAR(50),
+    tempat_lahir VARCHAR(100),
+    tgl_lahir DATE,
+    jns_kel VARCHAR(10),
+    st_kawin VARCHAR(50),
+    alamat TEXT,
+    no_telp VARCHAR(20),
+    email VARCHAR(100),
+    nm_faskes1 VARCHAR(150),
+    nm_fasgigi VARCHAR(150),
+    tambah_info TEXT,
+    FOREIGN KEY (id_peserta) REFERENCES t_peserta(id_peserta) ON DELETE CASCADE
+);
+
+CREATE TABLE t_peserta_pekerjaan (
+    id_pekerjaan INT PRIMARY KEY AUTO_INCREMENT,
+    id_peserta VARCHAR(50) NOT NULL,
+    no_pn VARCHAR(50),
+    no_nip VARCHAR(50),
+    npp VARCHAR(50),
+    no_dana VARCHAR(50),
+    jabatan VARCHAR(100),
+    kd_cab VARCHAR(50),
+    pp_bri VARCHAR(100),
+    tgl_st_peg DATE,
+    gaji_tot DECIMAL(15,2),
+    grade VARCHAR(50),
+    no_rek VARCHAR(50),
+    nm_cab VARCHAR(100),
+    rek_an_nm VARCHAR(150),
+    FOREIGN KEY (id_peserta) REFERENCES t_peserta(id_peserta) ON DELETE CASCADE
+);
+
+CREATE TABLE t_peserta_staging (
+    id_staging INT PRIMARY KEY AUTO_INCREMENT,
+    id_peserta VARCHAR(50),
+    jenis_pengajuan VARCHAR(50),
+    data_json JSON,
+    status_approval VARCHAR(30) DEFAULT 'PENDING_CHECKER',
+    maker_id VARCHAR(50),
+    checker_id VARCHAR(50),
+    signer_id VARCHAR(50),
+    catatan_checker TEXT,
+    catatan_signer TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

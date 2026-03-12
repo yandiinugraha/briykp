@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
 	"briyjkp/database"
@@ -35,7 +36,12 @@ func main() {
 	middlewares.StartAuditWorker()
 
 	// Initialize Fiber app
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 50 * 1024 * 1024, // 50 MB
+	})
+
+	// Recover Middleware to avoid crashes
+	app.Use(recover.New())
 
 	// Logger Middleware
 	app.Use(logger.New())

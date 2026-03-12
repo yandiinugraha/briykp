@@ -58,6 +58,28 @@ func Setup(app *fiber.App) {
 	// SK Prospens (Staff, Admin, Super Admin)
 	protected.Get("/sk", controllers.GetSkProspens)
 
+	kepesertaan := protected.Group("/kepesertaan")
+	
+	// Iuran Peserta (Upload & Discrepancies)
+	kepesertaan.Post("/iuran/upload", controllers.UploadIuranFile)
+	kepesertaan.Get("/iuran/uploads", controllers.GetIuranUploads)
+	kepesertaan.Get("/iuran/upload/:id/details", controllers.GetIuranUploadDetails)
+	kepesertaan.Post("/iuran/upload/:id/submit", controllers.SubmitIuranForApproval)
+	kepesertaan.Post("/iuran/upload/:id/process", controllers.ProcessIuranApproval)
+	kepesertaan.Post("/iuran/new-member/approve", controllers.ApproveNewMember)
+	
+	kepesertaan.Post("/iuran/compare/:bulan/:tahun", controllers.CompareIuranData)
+	kepesertaan.Get("/iuran/discrepancies/:bulan/:tahun", controllers.GetIuranDiscrepancies)
+	kepesertaan.Get("/iuran/discrepancy/:bulan/:tahun", controllers.GetIuranDiscrepancies)
+	kepesertaan.Get("/iuran/penampungan/:bulan/:tahun", controllers.GetIuranPenampungan)
+
+	// PHK Upload
+	kepesertaan.Post("/phk/upload", controllers.UploadPhkFile)
+	kepesertaan.Get("/phk/uploads", controllers.GetPhkUploads)
+	kepesertaan.Get("/phk/upload/:id/details", controllers.GetPhkUploadDetails)
+	kepesertaan.Post("/phk/upload/:id/submit", controllers.SubmitPhkForApproval)
+	kepesertaan.Post("/phk/upload/:id/process", controllers.ProcessPhkApproval)
+
 	// Notifications
 	protected.Get("/notifications", controllers.GetNotifications)
 	protected.Put("/notifications/:id/read", controllers.MarkNotificationRead)
@@ -74,6 +96,13 @@ func Setup(app *fiber.App) {
 	// BRI Life
 	protected.Get("/brilife/candidates", controllers.GetBrilifeCandidates)
 	protected.Post("/brilife/submit", controllers.SubmitBrilifeRegistration)
+
+	// Investasi (Staff, Admin, Super Admin)
+	investasi := protected.Group("/investasi")
+	investasi.Get("/proposals", controllers.GetInvestmentProposals)
+	investasi.Post("/proposals/upload", controllers.UploadInvestmentProposal)
+	investasi.Post("/proposals/:id/approve", controllers.ApproveInvestmentProposal)
+	investasi.Get("/transactions", controllers.GetInvestmentTransactions)
 
 	// Master Data (Helper for Front-end)
 	master := protected.Group("/master")

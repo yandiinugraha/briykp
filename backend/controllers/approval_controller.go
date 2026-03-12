@@ -82,7 +82,6 @@ func ProcessApproval(c *fiber.Ctx) error {
 			role = "MAKER"
 		}
 	} else {
-		// Fallback for testing if no JWT somehow
 		role = "CHECKER"
 	}
 
@@ -93,14 +92,12 @@ func ProcessApproval(c *fiber.Ctx) error {
 			return err
 		}
 
-		// Simplified Logic Maker-Checker-Signer
 		var nextStatus string
 		if req.Action == "APPROVE" {
-			if role == "MAKER" {
-				nextStatus = "PENDING_CHECKER"
-			} else if role == "CHECKER" {
+			// Logic Maker -> Checker -> Signer
+			if pendaftaran.StatusApproval == "PENDING_CHECKER" && role == "CHECKER" {
 				nextStatus = "PENDING_SIGNER"
-			} else if role == "SIGNER" {
+			} else if pendaftaran.StatusApproval == "PENDING_SIGNER" && role == "SIGNER" {
 				nextStatus = "APPROVED"
 
 				// APPLY DATA CHANGES UPON FINAL APPROVAL
@@ -108,38 +105,29 @@ func ProcessApproval(c *fiber.Ctx) error {
 					if pendaftaran.DataBaru != nil {
 						var participantIDs []string
 						if err := json.Unmarshal([]byte(*pendaftaran.DataBaru), &participantIDs); err == nil && len(participantIDs) > 0 {
-							// Update Status BPJS to AKTIF (1)
 							tx.Model(&models.TPeserta{}).Where("id_peserta IN ?", participantIDs).Update("status_bpjs_id", 1)
-							
-							// Here we would normally generate Form 34/37 
-							// For MVP, the approval itself acts as the generation marker
 						}
 					}
 				} else if pendaftaran.JenisManfaat == "DAFTAR_BRILIFE" {
 					if pendaftaran.DataBaru != nil {
 						var participantIDs []string
 						if err := json.Unmarshal([]byte(*pendaftaran.DataBaru), &participantIDs); err == nil && len(participantIDs) > 0 {
-							// Update Status BRI Life to AKTIF (1)
 							tx.Model(&models.TPeserta{}).Where("id_peserta IN ?", participantIDs).Update("status_brilife_id", 1)
-							
-							// Generate Data Deklarasi API marker
 						}
 					}
 				} else if pendaftaran.JenisManfaat == "FEEDBACK_BPJS" {
-					// MVP Logic: Simulate parsing an uploaded feedback CSV/Excel
-					// We will automatically update any participants who have status_bpjs_id != 1 to AKTIF 
-					// to simulate processing "Success" rows in the feedback file.
 					tx.Model(&models.TPeserta{}).Where("status_bpjs_id != ? OR status_bpjs_id IS NULL", 1).Update("status_bpjs_id", 1)
-				} else {
-					// Assume MUTASI or Default
+				} else if pendaftaran.JenisManfaat == "PENDAFTARAN_PESERTA_BARU" || pendaftaran.JenisManfaat == "PEMBARUAN_PESERTA" {
 					if pendaftaran.DataBaru != nil {
 						var updateData models.TPeserta
 						if err := json.Unmarshal([]byte(*pendaftaran.DataBaru), &updateData); err == nil {
 							if pendaftaran.IDPeserta != nil {
-								// Update existing
 								tx.Model(&models.TPeserta{}).Where("id_peserta = ?", *pendaftaran.IDPeserta).Updates(updateData)
 							} else {
-								// Create new
+								// Fix ID generation for new peserta
+								if updateData.IDPeserta == "" {
+									updateData.IDPeserta = "PST-" + time.Now().Format("20060102150405")
+								}
 								tx.Create(&updateData)
 								pendaftaran.IDPeserta = &updateData.IDPeserta
 							}
@@ -154,6 +142,11 @@ func ProcessApproval(c *fiber.Ctx) error {
 					}
 					tx.Create(&sk)
 				}
+			} else if pendaftaran.StatusApproval == "DRAFT" && role == "MAKER" {
+				nextStatus = "PENDING_CHECKER"
+			} else {
+				// Prevent invalid transitions or unauthorized approvals
+				return fmt.Errorf("invalid approval sequence or unauthorized role")
 			}
 		} else {
 			nextStatus = "REJECTED"
@@ -179,14 +172,18 @@ func ProcessApproval(c *fiber.Ctx) error {
 	})
 
 	if errTx != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Transaction failed"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": errTx.Error()})
 	}
 
 	// Trigger Audit Log
 	userIP := c.IP()
 	newValStr := "Approval Status: " + req.Action
+	userID := "System"
+	if u := c.Locals("username"); u != nil {
+		userID = u.(string)
+	}
 	middlewares.AuditChannel <- middlewares.AuditLogData{
-		UserID:    "USER_TEMP", // TODO: Auth extraction
+		UserID:    userID,
 		Modul:     "Approval",
 		Action:    "UPDATE",
 		NewValue:  &newValStr,
@@ -209,7 +206,7 @@ func ProcessApproval(c *fiber.Ctx) error {
 			database.DB.Create(&models.TNotification{
 				Role:    &signerRole,
 				Title:   "Pendaftaran Baru Menunggu Persetujuan",
-				Message: "Ada pengajuan " + req.IDTransaksi + " menunggu persetujuan Signer.",
+				Message: "Ada pengajuan " + req.IDTransaksi + " menunggu persetujuan Signer/Reviewer.",
 				LinkURL: &approvalLink,
 			})
 		} else if role == "SIGNER" {
@@ -217,7 +214,7 @@ func ProcessApproval(c *fiber.Ctx) error {
 			database.DB.Create(&models.TNotification{
 				Role:    &staffRole,
 				Title:   "Pendaftaran Disetujui",
-				Message: "Pengajuan " + req.IDTransaksi + " telah disetujui oleh Signer.",
+				Message: "Pengajuan " + req.IDTransaksi + " telah disetujui sepenuhnya.",
 				LinkURL: &approvalLink,
 			})
 		}
@@ -231,7 +228,7 @@ func ProcessApproval(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.JSON(fiber.Map{"message": "Approval processed successfully"})
+	return c.JSON(fiber.Map{"message": "Approval processed successfully", "status": "ok"})
 }
 
 // GetAllPendaftaran retrieves all submitted requests

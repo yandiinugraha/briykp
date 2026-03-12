@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -160,7 +160,7 @@ const PesertaManagement: React.FC = () => {
                 // MAKER flow: Create pendaftaran request instead of direct CRUD
                 const pendaftaranData = {
                     id_peserta: selectedPeserta ? selectedPeserta.id_peserta : null,
-                    jenis_manfaat: selectedPeserta ? 'PEMBARUAN PESERTA' : 'PENDAFTARAN PESERTA BARU',
+                    jenis_manfaat: selectedPeserta ? 'PEMBARUAN_PESERTA' : 'PENDAFTARAN_PESERTA_BARU',
                     data_baru: JSON.stringify(formData)
                 };
 

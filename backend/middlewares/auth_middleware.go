@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -34,9 +35,24 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
 	}
 
-	c.Locals("user_id", claims["user_id"])
-	c.Locals("username", claims["username"])
-	c.Locals("role", claims["role"])
+	// Helper to safely convert interface to string
+	toString := func(v interface{}) string {
+		if v == nil {
+			return ""
+		}
+		switch val := v.(type) {
+		case string:
+			return val
+		case float64:
+			return fmt.Sprintf("%.0f", val)
+		default:
+			return fmt.Sprintf("%v", val)
+		}
+	}
+
+	c.Locals("user_id", toString(claims["user_id"]))
+	c.Locals("username", toString(claims["username"]))
+	c.Locals("role", toString(claims["role"]))
 
 	return c.Next()
 }

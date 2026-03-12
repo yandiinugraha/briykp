@@ -1,0 +1,1062 @@
+2026/03/12 08:38:18 Database connection successfully opened
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.151ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[5.042ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[3.737ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_role' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.115ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.889ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[1.310ms] [34;1m[rows:-][0m SELECT * FROM `m_role` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[1.623ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_role' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.092ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.623ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[3.546ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_role' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.068ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.645ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[1.064ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_role' AND constraint_name = 'uni_m_role_role_name'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.091ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.483ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.460ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_permission' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.094ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.283ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.838ms] [34;1m[rows:-][0m SELECT * FROM `m_permission` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.475ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_permission' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.069ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.268ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.463ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_permission' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.061ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.233ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.584ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_permission' AND constraint_name = 'uni_m_permission_permission_name'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.055ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.220ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.331ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_role_permission' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.056ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.242ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.580ms] [34;1m[rows:-][0m SELECT * FROM `m_role_permission` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.359ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_role_permission' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.060ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.262ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.341ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_user' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.114ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.316ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.408ms] [34;1m[rows:-][0m SELECT * FROM `m_user` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.384ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_user' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.063ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.239ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.363ms] [34;1m[rows:3][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_user' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.056ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.238ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.305ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_user' AND constraint_name = 'uni_m_user_username'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.067ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.287ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.270ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_user' AND constraint_name = 'fk_m_user_role'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.061ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.242ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.612ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_kelompok_prospens' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.064ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.238ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.465ms] [34;1m[rows:-][0m SELECT * FROM `m_kelompok_prospens` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.379ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_kelompok_prospens' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.048ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.205ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.299ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_kelompok_prospens' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.054ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.237ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.289ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_kelompok_prospens' AND constraint_name = 'uni_m_kelompok_prospens_kode'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.058ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.234ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.358ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_kelas_prospens' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.064ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.238ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.213ms] [34;1m[rows:-][0m SELECT * FROM `m_kelas_prospens` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.335ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_kelas_prospens' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.039ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.216ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.321ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_kelas_prospens' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.067ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.234ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.279ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_kelas_prospens' AND constraint_name = 'uni_m_kelas_prospens_kode'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.059ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.220ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.344ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_status_bpjs' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.065ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.212ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.383ms] [34;1m[rows:-][0m SELECT * FROM `m_status_bpjs` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.394ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_status_bpjs' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.108ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.282ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.423ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_status_bpjs' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.042ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.261ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.485ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_status_bpjs' AND constraint_name = 'uni_m_status_bpjs_kode'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.058ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.271ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.330ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 'm_status_brilife' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.053ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.225ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.687ms] [34;1m[rows:-][0m SELECT * FROM `m_status_brilife` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.476ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 'm_status_brilife' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.062ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.214ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.357ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 'm_status_brilife' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.041ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.201ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.244ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 'm_status_brilife' AND constraint_name = 'uni_m_status_brilife_kode'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.053ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.257ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.340ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_peserta' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.066ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.232ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.262ms] [34;1m[rows:-][0m SELECT * FROM `t_peserta` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40
+[0m[33m[0.751ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_peserta' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.065ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.245ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.344ms] [34;1m[rows:6][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 't_peserta' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.050ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.190ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.285ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 't_peserta' AND constraint_name = 'uni_t_peserta_nik_bri'
+
+2026/03/12 08:38:18 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:40 [35;1mError 3780 (HY000): Referencing column 'id_kelompok' and referenced column 'id' in foreign key constraint 't_peserta_ibfk_1' are incompatible.
+[0m[33m[1.347ms] [34;1m[rows:0][0m ALTER TABLE `t_peserta` MODIFY COLUMN `id_kelompok` bigint unsigned
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.055ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.253ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.348ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_upload' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.063ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.234ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.261ms] [34;1m[rows:-][0m SELECT * FROM `t_iuran_upload` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.418ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_upload' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[5.633ms] [34;1m[rows:0][0m ALTER TABLE `t_iuran_upload` MODIFY COLUMN `total_nominal` decimal(18,2) DEFAULT 0
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.065ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.247ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.322ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_upload_detail' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.048ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.242ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.177ms] [34;1m[rows:-][0m SELECT * FROM `t_iuran_upload_detail` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.361ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_upload_detail' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.043ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.197ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.287ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_upload_detail' AND index_name = 'idx_t_iuran_upload_detail_upload_id'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.039ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.219ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.350ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_discrepancy' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.042ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.198ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.196ms] [34;1m[rows:-][0m SELECT * FROM `t_iuran_discrepancy` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.644ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_discrepancy' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[2.153ms] [34;1m[rows:0][0m ALTER TABLE `t_iuran_discrepancy` MODIFY COLUMN `nominal_tht` decimal(15,2) DEFAULT 0
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[1.916ms] [34;1m[rows:0][0m ALTER TABLE `t_iuran_discrepancy` MODIFY COLUMN `nominal_prospens` decimal(15,2) DEFAULT 0
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.068ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.266ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.361ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_penampungan' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.093ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.231ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.205ms] [34;1m[rows:-][0m SELECT * FROM `t_iuran_penampungan` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.369ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_iuran_penampungan' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.057ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.201ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.338ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_phk_upload' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.070ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.254ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.390ms] [34;1m[rows:-][0m SELECT * FROM `t_phk_upload` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.363ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_phk_upload' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.046ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.207ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.538ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_phk_upload_detail' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.067ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.252ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.423ms] [34;1m[rows:-][0m SELECT * FROM `t_phk_upload_detail` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.392ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_phk_upload_detail' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.057ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.245ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.317ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'db_ykpbri' AND table_name = 't_phk_upload_detail' AND index_name = 'idx_t_phk_upload_detail_upload_id'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.062ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.234ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.340ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_investment_proposal' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.064ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.233ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.206ms] [34;1m[rows:-][0m SELECT * FROM `t_investment_proposal` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.416ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_investment_proposal' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.055ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.266ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.328ms] [34;1m[rows:2][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 't_investment_proposal' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.040ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.215ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.260ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 't_investment_proposal' AND constraint_name = 'uni_t_investment_proposal_proposal_no'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.042ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.193ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.321ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = 'db_ykpbri' AND table_name = 't_investment_transaction' AND table_type = 'BASE TABLE'
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.039ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.204ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[1.017ms] [34;1m[rows:-][0m SELECT * FROM `t_investment_transaction` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.353ms] [34;1m[rows:-][0m SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'db_ykpbri' AND table_name = 't_investment_transaction' ORDER BY ORDINAL_POSITION
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.051ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.415ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.297ms] [34;1m[rows:3][0m 
+SELECT
+	TABLE_NAME,
+	COLUMN_NAME,
+	INDEX_NAME,
+	NON_UNIQUE 
+FROM
+	information_schema.STATISTICS 
+WHERE
+	TABLE_SCHEMA = 'db_ykpbri' 
+	AND TABLE_NAME = 't_investment_transaction' 
+ORDER BY
+	INDEX_NAME,
+	SEQ_IN_INDEX
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.050ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.207ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m
+[0m[33m[0.256ms] [34;1m[rows:-][0m SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'db_ykpbri' AND table_name = 't_investment_transaction' AND constraint_name = 'uni_t_investment_transaction_transaction_no'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.048ms] [34;1m[rows:-][0m SELECT DATABASE()
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.196ms] [34;1m[rows:1][0m SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'db_ykpbri%' ORDER BY SCHEMA_NAME='db_ykpbri' DESC,SCHEMA_NAME limit 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:61
+[0m[33m[0.265ms] [34;1m[rows:-][0m SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'db_ykpbri' AND table_name = 't_investment_transaction' AND index_name = 'idx_t_investment_transaction_proposal_id'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:84
+[0m[33m[0.163ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE `m_role`.`role_name` = 'Super Admin' AND `m_role`.`id` = 1 ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:84
+[0m[33m[0.142ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE `m_role`.`role_name` = 'Admin' AND `m_role`.`id` = 2 ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:84
+[0m[33m[0.133ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE `m_role`.`role_name` = 'Staff' AND `m_role`.`id` = 3 ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:84
+[0m[33m[0.135ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE `m_role`.`role_name` = 'Peserta' AND `m_role`.`id` = 4 ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:94
+[0m[33m[0.140ms] [34;1m[rows:1][0m SELECT * FROM `m_kelompok_prospens` WHERE `m_kelompok_prospens`.`kode` = 'NORMAL' ORDER BY `m_kelompok_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:94
+[0m[33m[0.135ms] [34;1m[rows:1][0m SELECT * FROM `m_kelompok_prospens` WHERE `m_kelompok_prospens`.`kode` = 'DINI' ORDER BY `m_kelompok_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:94
+[0m[33m[0.127ms] [34;1m[rows:1][0m SELECT * FROM `m_kelompok_prospens` WHERE `m_kelompok_prospens`.`kode` = 'JD' ORDER BY `m_kelompok_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:104
+[0m[33m[0.166ms] [34;1m[rows:1][0m SELECT * FROM `m_kelas_prospens` WHERE `m_kelas_prospens`.`kode` = 'A' ORDER BY `m_kelas_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:104
+[0m[33m[0.164ms] [34;1m[rows:1][0m SELECT * FROM `m_kelas_prospens` WHERE `m_kelas_prospens`.`kode` = 'B' ORDER BY `m_kelas_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:104
+[0m[33m[0.138ms] [34;1m[rows:1][0m SELECT * FROM `m_kelas_prospens` WHERE `m_kelas_prospens`.`kode` = 'C' ORDER BY `m_kelas_prospens`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:114
+[0m[33m[0.120ms] [34;1m[rows:1][0m SELECT * FROM `m_status_bpjs` WHERE `m_status_bpjs`.`kode` = 'AKTIF' ORDER BY `m_status_bpjs`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:114
+[0m[33m[0.129ms] [34;1m[rows:1][0m SELECT * FROM `m_status_bpjs` WHERE `m_status_bpjs`.`kode` = 'NONAKTIF' ORDER BY `m_status_bpjs`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:114
+[0m[33m[0.139ms] [34;1m[rows:1][0m SELECT * FROM `m_status_bpjs` WHERE `m_status_bpjs`.`kode` = 'OFF' ORDER BY `m_status_bpjs`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:123
+[0m[33m[0.145ms] [34;1m[rows:1][0m SELECT * FROM `m_status_brilife` WHERE `m_status_brilife`.`kode` = 'AKTIF' ORDER BY `m_status_brilife`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:123
+[0m[33m[0.140ms] [34;1m[rows:1][0m SELECT * FROM `m_status_brilife` WHERE `m_status_brilife`.`kode` = 'NONAKTIF' ORDER BY `m_status_brilife`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:128
+[0m[33m[0.131ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE role_name = 'Super Admin' ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:129
+[0m[33m[0.128ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE role_name = 'Admin' ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:130
+[0m[33m[0.126ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE role_name = 'Staff' ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:131
+[0m[33m[0.136ms] [34;1m[rows:1][0m SELECT * FROM `m_role` WHERE role_name = 'Peserta' ORDER BY `m_role`.`id` LIMIT 1
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:146
+[0m[33m[0.170ms] [34;1m[rows:1][0m SELECT count(*) FROM `m_user` WHERE username = 'admin'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:146
+[0m[33m[0.131ms] [34;1m[rows:1][0m SELECT count(*) FROM `m_user` WHERE username = 'ykpadmin'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:146
+[0m[33m[0.105ms] [34;1m[rows:1][0m SELECT count(*) FROM `m_user` WHERE username = 'staff'
+
+2026/03/12 08:38:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/database/database.go:146
+[0m[33m[0.109ms] [34;1m[rows:1][0m SELECT count(*) FROM `m_user` WHERE username = 'peserta'
+2026/03/12 08:38:18 Server is running on port 3000
+
+ ┌───────────────────────────────────────────────────┐ 
+ │                  Fiber v2.52.12                   │ 
+ │               http://127.0.0.1:3000               │ 
+ │       (bound on host 0.0.0.0 and port 3000)       │ 
+ │                                                   │ 
+ │ Handlers ............ 92  Processes ........... 1 │ 
+ │ Prefork ....... Disabled  PID ............. 90418 │ 
+ └───────────────────────────────────────────────────┘ 
+
+08:38:33 | 204 |    3.254291ms | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:38:33 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[8.024ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:38:33 | 200 |   14.364167ms | 127.0.0.1 | GET | /api/notifications | -
+08:39:00 | 204 |     127.042µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:39:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[4.201ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:39:00 | 200 |     4.90475ms | 127.0.0.1 | GET | /api/notifications | -
+08:39:28 | 204 |          26µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:39:28 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[2.093ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:39:28 | 200 |    2.628083ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:39:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.661ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:39:30 | 200 |     763.709µs | 127.0.0.1 | GET | /api/notifications | -
+08:40:00 | 204 |       8.083µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:40:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.917ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:40:00 | 200 |     998.375µs | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:40:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.808ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:40:00 | 200 |      934.75µs | 127.0.0.1 | GET | /api/notifications | -
+08:40:30 | 204 |       5.667µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:40:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.438ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:40:30 | 200 |       1.598ms | 127.0.0.1 | GET | /api/notifications | -
+08:41:00 | 204 |      14.542µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:41:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.961ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:41:00 | 200 |    1.110625ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:41:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.942ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:41:00 | 200 |    1.124041ms | 127.0.0.1 | GET | /api/notifications | -
+08:41:30 | 204 |       5.375µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:41:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.903ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:41:30 | 200 |         971µs | 127.0.0.1 | GET | /api/notifications | -
+08:41:59 | 204 |       5.833µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:42:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[3.843ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:41:59 | 200 |    4.082042ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:42:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.649ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:42:00 | 200 |     734.583µs | 127.0.0.1 | GET | /api/notifications | -
+08:42:30 | 204 |       7.875µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:42:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.840ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:42:30 | 200 |     929.166µs | 127.0.0.1 | GET | /api/notifications | -
+08:43:00 | 204 |      44.959µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:43:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[3.228ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:43:00 | 200 |    5.838375ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:43:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.661ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:43:00 | 200 |     745.375µs | 127.0.0.1 | GET | /api/notifications | -
+08:43:15 | 204 |       6.291µs | 127.0.0.1 | OPTIONS | /api/approval/pendaftaran | -
+08:43:15 | 204 |       2.583µs | 127.0.0.1 | OPTIONS | /api/approval/pendaftaran | -
+
+2026/03/12 08:43:15 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237
+[0m[33m[1.620ms] [34;1m[rows:5][0m SELECT * FROM `t_approval_log` WHERE `t_approval_log`.`id_transaksi` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:15 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[3.863ms] [34;1m[rows:0][0m SELECT * FROM `t_lampirans` WHERE `t_lampirans`.`id_pengajuan` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:15 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[11.560ms] [34;1m[rows:6][0m SELECT * FROM `t_pendaftaran_manfaat`
+08:43:15 | 500 |    12.09925ms | 127.0.0.1 | GET | /api/approval/pendaftaran | -
+
+2026/03/12 08:43:15 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237
+[0m[33m[0.383ms] [34;1m[rows:5][0m SELECT * FROM `t_approval_log` WHERE `t_approval_log`.`id_transaksi` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:15 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[2.677ms] [34;1m[rows:0][0m SELECT * FROM `t_lampirans` WHERE `t_lampirans`.`id_pengajuan` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:15 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[3.599ms] [34;1m[rows:6][0m SELECT * FROM `t_pendaftaran_manfaat`
+08:43:15 | 500 |      3.6855ms | 127.0.0.1 | GET | /api/approval/pendaftaran | -
+08:43:18 | 204 |       5.625µs | 127.0.0.1 | OPTIONS | /api/finance/pembayaran | -
+08:43:18 | 204 |      53.042µs | 127.0.0.1 | OPTIONS | /api/finance/pembayaran | -
+
+2026/03/12 08:43:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/finance_controller.go:102
+[0m[33m[1.535ms] [34;1m[rows:1][0m SELECT * FROM `t_pembayaran_premi`
+08:43:18 | 200 |    1.804291ms | 127.0.0.1 | GET | /api/finance/pembayaran | -
+
+2026/03/12 08:43:18 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/finance_controller.go:102
+[0m[33m[0.177ms] [34;1m[rows:1][0m SELECT * FROM `t_pembayaran_premi`
+08:43:18 | 200 |     224.292µs | 127.0.0.1 | GET | /api/finance/pembayaran | -
+08:43:28 | 204 |      10.084µs | 127.0.0.1 | OPTIONS | /api/finance/pembayaran | -
+
+2026/03/12 08:43:28 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/finance_controller.go:34
+[0m[33m[6.908ms] [34;1m[rows:1][0m INSERT INTO `t_pembayaran_premi` (`no_nota_dinas`,`tanggal`,`total_premi`,`id_status_pembayaran`,`file_bukti_bayar`,`created_at`) VALUES ('ND-20260312084328','2026-03-12 08:43:28.917',200000,NULL,NULL,'2026-03-12 08:43:28.922')
+08:43:28 | 201 |    7.871042ms | 127.0.0.1 | POST | /api/finance/pembayaran | -
+
+2026/03/12 08:43:28 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/middlewares/audit_middleware.go:38
+[0m[33m[3.723ms] [34;1m[rows:1][0m INSERT INTO `t_audit_trail` (`user_id`,`modul`,`action`,`old_value`,`new_value`,`ip_address`,`created_at`) VALUES ('admin','Keuangan - Pembayaran','INSERT',NULL,'Pembayaran Premi ND-20260312084328 recorded with total 200000','127.0.0.1','2026-03-12 08:43:28.93')
+2026/03/12 08:43:28 Audit log recorded: Keuangan - Pembayaran - INSERT
+
+2026/03/12 08:43:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/finance_controller.go:102
+[0m[33m[1.333ms] [34;1m[rows:2][0m SELECT * FROM `t_pembayaran_premi`
+08:43:30 | 200 |    1.465875ms | 127.0.0.1 | GET | /api/finance/pembayaran | -
+08:43:30 | 204 |       4.625µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:43:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.637ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:43:30 | 200 |     713.125µs | 127.0.0.1 | GET | /api/notifications | -
+08:43:42 | 204 |       9.083µs | 127.0.0.1 | OPTIONS | /api/approval/pendaftaran | -
+08:43:42 | 204 |      30.209µs | 127.0.0.1 | OPTIONS | /api/approval/pendaftaran | -
+
+2026/03/12 08:43:42 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237
+[0m[33m[0.840ms] [34;1m[rows:5][0m SELECT * FROM `t_approval_log` WHERE `t_approval_log`.`id_transaksi` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:42 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[1.258ms] [34;1m[rows:0][0m SELECT * FROM `t_lampirans` WHERE `t_lampirans`.`id_pengajuan` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:42 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[4.624ms] [34;1m[rows:6][0m SELECT * FROM `t_pendaftaran_manfaat`
+08:43:42 | 500 |    4.867792ms | 127.0.0.1 | GET | /api/approval/pendaftaran | -
+
+2026/03/12 08:43:42 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237
+[0m[33m[0.231ms] [34;1m[rows:5][0m SELECT * FROM `t_approval_log` WHERE `t_approval_log`.`id_transaksi` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:42 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[0.305ms] [34;1m[rows:0][0m SELECT * FROM `t_lampirans` WHERE `t_lampirans`.`id_pengajuan` IN ('PGJ-20260306150707','PGJ-20260307131639','PGJ-20260310201957','PGJ-20260310234800','PGJ-20260310235030','PGJ-20260311001041')
+
+2026/03/12 08:43:42 [31;1m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/approval_controller.go:237 [35;1mError 1146 (42S02): Table 'db_ykpbri.t_lampirans' doesn't exist
+[0m[33m[0.808ms] [34;1m[rows:6][0m SELECT * FROM `t_pendaftaran_manfaat`
+08:43:42 | 500 |         855µs | 127.0.0.1 | GET | /api/approval/pendaftaran | -
+08:44:00 | 204 |        8.25µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:44:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[4.314ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:44:00 | 200 |    4.771625ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:44:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.141ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:44:00 | 200 |    1.250459ms | 127.0.0.1 | GET | /api/notifications | -
+08:44:02 | 204 |        20.5µs | 127.0.0.1 | OPTIONS | /api/brilife/candidates | -
+08:44:02 | 204 |         9.5µs | 127.0.0.1 | OPTIONS | /api/brilife/candidates | -
+
+2026/03/12 08:44:02 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/brilife_controller.go:29 [33mSLOW SQL >= 200ms
+[0m[31;1m[353.109ms] [33m[rows:57740][35m SELECT * FROM `t_peserta` WHERE status_brilife_id != 1 OR status_brilife_id IS NULL[0m
+08:44:02 | 200 |  518.219709ms | 127.0.0.1 | GET | /api/brilife/candidates | -
+
+2026/03/12 08:44:03 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/brilife_controller.go:29 [33mSLOW SQL >= 200ms
+[0m[31;1m[358.522ms] [33m[rows:57740][35m SELECT * FROM `t_peserta` WHERE status_brilife_id != 1 OR status_brilife_id IS NULL[0m
+08:44:02 | 200 |  515.208541ms | 127.0.0.1 | GET | /api/brilife/candidates | -
+08:44:30 | 204 |      19.416µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:44:30 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.875ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:44:30 | 200 |    2.144583ms | 127.0.0.1 | GET | /api/notifications | -
+08:44:52 | 204 |     104.708µs | 127.0.0.1 | OPTIONS | /api/proyeksi | -
+08:44:52 | 204 |       8.167µs | 127.0.0.1 | OPTIONS | /api/proyeksi | -
+
+2026/03/12 08:44:53 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/peserta_controller.go:60 [33mSLOW SQL >= 200ms
+[0m[31;1m[408.860ms] [33m[rows:57740][35m SELECT * FROM `t_peserta`[0m
+08:44:52 | 200 |  559.647416ms | 127.0.0.1 | GET | /api/proyeksi | -
+
+2026/03/12 08:44:53 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/peserta_controller.go:60 [33mSLOW SQL >= 200ms
+[0m[31;1m[334.155ms] [33m[rows:57740][35m SELECT * FROM `t_peserta`[0m
+08:44:53 | 200 |  485.021458ms | 127.0.0.1 | GET | /api/proyeksi | -
+08:45:00 | 204 |     112.334µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:45:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[2.281ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:45:00 | 200 |       2.863ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:45:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.023ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:45:00 | 200 |    1.181333ms | 127.0.0.1 | GET | /api/notifications | -
+08:45:31 | 204 |      15.167µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:45:31 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.260ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:45:31 | 200 |    1.441709ms | 127.0.0.1 | GET | /api/notifications | -
+08:46:00 | 204 |      15.208µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:46:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.649ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:46:00 | 200 |      4.0735ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:46:01 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.966ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:46:01 | 200 |       1.096ms | 127.0.0.1 | GET | /api/notifications | -
+08:47:00 | 204 |       8.833µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:47:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[3.138ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:47:00 | 200 |    3.398458ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:47:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.330ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:47:00 | 200 |     385.583µs | 127.0.0.1 | GET | /api/notifications | -
+08:48:00 | 204 |      77.792µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:48:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[2.014ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:48:00 | 200 |    2.441584ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:48:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.838ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:48:00 | 200 |     896.541µs | 127.0.0.1 | GET | /api/notifications | -
+08:49:00 | 204 |      14.083µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:49:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[2.652ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:49:00 | 200 |      3.5045ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:49:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.958ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:49:00 | 200 |     1.02575ms | 127.0.0.1 | GET | /api/notifications | -
+08:49:59 | 204 |      28.625µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:50:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[2.599ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:49:59 | 200 |    3.066584ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:50:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.818ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:49:59 | 200 |     883.833µs | 127.0.0.1 | GET | /api/notifications | -
+08:51:00 | 204 |       8.541µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+08:51:00 | 204 |          16µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:51:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[4.750ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:51:00 | 200 |     5.39425ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:51:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.507ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:51:00 | 200 |     565.042µs | 127.0.0.1 | GET | /api/notifications | -
+08:52:00 | 204 |        93.5µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:52:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[1.798ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:52:00 | 200 |    2.210041ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:52:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.375ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:52:00 | 200 |     423.125µs | 127.0.0.1 | GET | /api/notifications | -
+08:53:00 | 204 |      16.083µs | 127.0.0.1 | OPTIONS | /api/notifications | -
+
+2026/03/12 08:53:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[3.787ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:53:00 | 200 |    12.24075ms | 127.0.0.1 | GET | /api/notifications | -
+
+2026/03/12 08:53:00 [32m/Users/damasolusindo/Documents/DEV/briykp/backend/controllers/notification_controller.go:27
+[0m[33m[0.597ms] [34;1m[rows:1][0m SELECT * FROM `t_notification` WHERE user_id = '1' OR role = 'Super Admin' ORDER BY created_at desc LIMIT 20
+08:53:00 | 200 |     703.541µs | 127.0.0.1 | GET | /api/notifications | -
+08:53:30 | 404 |     829.792µs | 127.0.0.1 | GET | / | Cannot GET /
+08:53:30 | 404 |       6.625µs | 127.0.0.1 | GET | /favicon.ico | Cannot GET /favicon.ico
+signal: killed

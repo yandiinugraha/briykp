@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"briyjkp/models"
 
@@ -54,6 +53,20 @@ func ConnectDB() {
 		&models.TSkProspens{},
 		&models.TAuditTrail{},
 		&models.TNotification{},
+		&models.TIuranInput{},
+		&models.TIuranDetail{},
+	)
+
+	// Separate AutoMigrate for iuran upload tables (avoids FK error on t_peserta blocking these)
+	DB.AutoMigrate(
+		&models.TIuranUpload{},
+		&models.TIuranUploadDetail{},
+		&models.TIuranDiscrepancy{},
+		&models.TIuranPenampungan{},
+		&models.TPhkUpload{},
+		&models.TPhkUploadDetail{},
+		&models.TInvestmentProposal{},
+		&models.TInvestmentTransaction{},
 	)
 
 	seedData()
@@ -143,37 +156,5 @@ func seedData() {
 		}
 	}
 
-	// Seed 100 Participants for Proyeksi Testing
-	var pCount int64
-	DB.Model(&models.TPeserta{}).Count(&pCount)
-	if pCount == 0 {
-		log.Println("Seeding 100 dummy participants...")
-		for i := 1; i <= 100; i++ {
-			// Generate random PHK date between 1 Jan 2026 and 31 Dec 2026
-			randomDays := i % 365 
-			tglPhk := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC).AddDate(0, 0, randomDays)
-			
-			// Mock data
-			kelompokID := uint((i % 3) + 1) // 1=NORMAL, 2=DINI, 3=JD
-			kelasID := uint((i % 3) + 1) // 1=A, 2=B, 3=C
-			statusBpjs := uint(1) // AKTIF
-			statusBrilife := uint(1) // AKTIF
-
-			peserta := models.TPeserta{
-				IDPeserta:        fmt.Sprintf("P-%05d", i),
-				NamaPeserta:      fmt.Sprintf("Peserta Dummy %d", i),
-				NikBri:           fmt.Sprintf("NIK%06d", i),
-				TglPhk:           &tglPhk,
-				JenisMutasi:      "PHK Normal",
-				IDKelompok:       &kelompokID,
-				IDKelas:          &kelasID,
-				TmtPertanggungan: &tglPhk, // simplified for seeder
-				NoKartuBrilife:   fmt.Sprintf("BL%08d", i),
-				StatusBpjsID:     &statusBpjs,
-				StatusBrilifeID:  &statusBrilife,
-			}
-			DB.Create(&peserta)
-		}
-		log.Println("100 participants seeded successfully.")
-	}
+	// Dummy participants seed removed to allow clean slate testing
 }

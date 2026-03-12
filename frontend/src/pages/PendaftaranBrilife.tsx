@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { DataTable, type ColumnDef } from '../components/DataTable';
 
 interface PesertaData {
     id_peserta: string;
@@ -34,8 +35,8 @@ const PendaftaranBrilife: React.FC = () => {
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setCandidates(res.data);
-            setSelectedIds([]); // Reset selection on new fetch
+            setCandidates(res.data || []);
+            setSelectedIds([]);
         } catch (error) {
             console.error('Error fetching BRI Life candidates:', error);
         } finally {
@@ -55,7 +56,7 @@ const PendaftaranBrilife: React.FC = () => {
     };
 
     const selectAll = () => {
-        if (selectedIds.length === candidates.length) {
+        if (selectedIds.length === candidates.length && candidates.length > 0) {
             setSelectedIds([]);
         } else {
             setSelectedIds(candidates.map(c => c.id_peserta));
@@ -73,7 +74,7 @@ const PendaftaranBrilife: React.FC = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             alert('Berhasil diajukan ke Checker!');
-            fetchCandidates(filterDate); // Refresh list
+            fetchCandidates(filterDate);
         } catch (error) {
             console.error('Error submitting BRI Life registration:', error);
             alert('Gagal mengajukan pendaftaran.');
@@ -82,13 +83,73 @@ const PendaftaranBrilife: React.FC = () => {
         }
     };
 
+    const HeaderCheckbox = () => (
+        <input
+            type="checkbox"
+            className="rounded border-gray-300 text-blue-600 focus:ring-blue-600 w-4 h-4 cursor-pointer"
+            checked={selectedIds.length === candidates.length && candidates.length > 0}
+            onChange={selectAll}
+        />
+    );
+
+    const columns: ColumnDef<PesertaData>[] = [
+        {
+            header: <HeaderCheckbox />,
+            accessor: (row) => (
+                <input
+                    type="checkbox"
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-600 w-4 h-4 cursor-pointer"
+                    checked={selectedIds.includes(row.id_peserta)}
+                    onChange={() => toggleSelection(row.id_peserta)}
+                />
+            ),
+            id: 'selection',
+            sortable: false
+        },
+        { header: 'ID Peserta', accessor: 'id_peserta', id: 'id_peserta' },
+        {
+            header: 'Nama / NIK',
+            accessor: (row) => (
+                <div>
+                    <div className="font-bold text-gray-900">{row.nama_peserta}</div>
+                    <div className="text-xs text-gray-500">{row.nik_bri}</div>
+                </div>
+            ),
+            id: 'nama_nik'
+        },
+        {
+            header: 'TMT Pertanggungan',
+            accessor: (row) => row.tmt_pertanggungan ? new Date(row.tmt_pertanggungan).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '-',
+            id: 'tmt_pertanggungan'
+        },
+        {
+            header: 'Kelompok & Kelas',
+            accessor: (row) => (
+                <div>
+                    <div className="text-sm text-gray-900">{row.kelompok?.nama || '-'}</div>
+                    <div className="text-xs text-gray-500">Kelas {row.kelas?.nama || '-'}</div>
+                </div>
+            ),
+            id: 'kel_kelas'
+        },
+        {
+            header: 'Status BRI Life',
+            accessor: (row) => (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                    {row.status_brilife?.nama || 'TIDAK TERDAFTAR'}
+                </span>
+            ),
+            id: 'status_brilife'
+        }
+    ];
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-8 w-full max-w-7xl mx-auto"
         >
-            <div className="flex justify-between items-end mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">Pendaftaran BRI Life</h1>
                     <p className="text-gray-500 mt-1">Daftar kandidat peserta yang akan didaftarkan ke BRI Life.</p>
@@ -108,7 +169,7 @@ const PendaftaranBrilife: React.FC = () => {
                         type="submit"
                         className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-sm self-end h-10 flex items-center gap-2"
                     >
-                        <i className="fas fa-filter"></i> Filter
+                        Filter
                     </button>
                     {filterDate && (
                         <button
@@ -128,12 +189,6 @@ const PendaftaranBrilife: React.FC = () => {
                         <div className="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full text-sm">
                             {selectedIds.length} Terpilih
                         </div>
-                        <button
-                            onClick={selectAll}
-                            className="text-sm font-medium text-gray-600 hover:text-blue-600 underline decoration-dotted underline-offset-4"
-                        >
-                            {selectedIds.length === candidates.length && candidates.length > 0 ? 'Batalkan Semua' : 'Pilih Semua'}
-                        </button>
                     </div>
 
                     <button
@@ -141,90 +196,16 @@ const PendaftaranBrilife: React.FC = () => {
                         disabled={selectedIds.length === 0 || submitLoading}
                         className={`px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${selectedIds.length > 0 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                     >
-                        {submitLoading ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                Mengajukan...
-                            </>
-                        ) : (
-                            <>
-                                <i className="fas fa-paper-plane"></i> Ajukan ke Checker
-                            </>
-                        )}
+                        {submitLoading ? 'Mengajukan...' : 'Ajukan ke Checker'}
                     </button>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50/50">
-                            <tr>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider w-10">
-                                    <input
-                                        type="checkbox"
-                                        className="rounded text-blue-600 focus:ring-blue-600 w-4 h-4"
-                                        checked={selectedIds.length === candidates.length && candidates.length > 0}
-                                        onChange={selectAll}
-                                    />
-                                </th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">ID Peserta</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Nama / NIK</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">TMT Pertanggungan</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Kelompok / Kelas</th>
-                                <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Status BRI Life</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                                        <div className="flex justify-center mb-4">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                        </div>
-                                        Memuat data kandidat...
-                                    </td>
-                                </tr>
-                            ) : candidates.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 font-medium bg-gray-50/50">
-                                        Tidak ada kandidat BRI Life.
-                                    </td>
-                                </tr>
-                            ) : (
-                                candidates.map((p) => (
-                                    <tr key={p.id_peserta} className={selectedIds.includes(p.id_peserta) ? 'bg-blue-50/30' : 'hover:bg-gray-50'}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <input
-                                                type="checkbox"
-                                                className="rounded text-blue-600 focus:ring-blue-600 w-4 h-4"
-                                                checked={selectedIds.includes(p.id_peserta)}
-                                                onChange={() => toggleSelection(p.id_peserta)}
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 border-l-2 border-transparent">
-                                            {p.id_peserta}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-bold text-gray-900">{p.nama_peserta}</div>
-                                            <div className="text-sm text-gray-500">{p.nik_bri}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
-                                            {p.tmt_pertanggungan ? new Date(p.tmt_pertanggungan).toLocaleDateString('id-ID') : '-'}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{p.kelompok?.nama || '-'}</div>
-                                            <div className="text-sm text-gray-500 text-xs">Kelas {p.kelas?.nama || '-'}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-red-100 text-red-800">
-                                                {p.status_brilife?.nama || 'TIDAK TERDAFTAR'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    data={candidates}
+                    columns={columns}
+                    loading={loading}
+                    exportFileName="Kandidat_BRILife"
+                />
             </div>
 
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">

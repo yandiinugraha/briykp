@@ -1,10 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { DataTable, type ColumnDef } from '../components/DataTable';
+
+interface FeedbackTicket {
+    id_pengajuan: string;
+    tgl_pengajuan: string;
+    jenis_manfaat: string;
+    status_approval: string;
+    data_baru: string; // JSON string containing file info
+}
 
 const UploadFeedbackBpjs: React.FC = () => {
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
+    const [history, setHistory] = useState<FeedbackTicket[]>([]);
+    const [historyLoading, setHistoryLoading] = useState(false);
+
+    useEffect(() => {
+        fetchHistory();
+    }, []);
+
+    const fetchHistory = async () => {
+        setHistoryLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('http://localhost:3000/api/approval/pendaftaran', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Filter only BPJS Feedback tickets
+            const feedbackTickets = (res.data || []).filter(
+                (ticket: FeedbackTicket) => ticket.jenis_manfaat === 'FEEDBACK_BPJS'
+            );
+
+            // Sort by descending date
+            feedbackTickets.sort((a: FeedbackTicket, b: FeedbackTicket) =>
+                new Date(b.tgl_pengajuan).getTime() - new Date(a.tgl_pengajuan).getTime()
+            );
+
+            setHistory(feedbackTickets);
+        } catch (error) {
+            console.error('Error fetching feedback history:', error);
+        } finally {
+            setHistoryLoading(false);
+        }
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -29,7 +70,8 @@ const UploadFeedbackBpjs: React.FC = () => {
             });
 
             alert('File Feedback BPJS berhasil diunggah! Berkas telah masuk ke Antrian Approval (Checker).');
-            setFile(null); // Reset form
+            setFile(null);
+            fetchHistory(); // Refresh history
         } catch (error) {
             console.error('Error uploading feedback:', error);
             alert('Gagal mengunggah file. Silakan coba lagi.');
@@ -38,11 +80,70 @@ const UploadFeedbackBpjs: React.FC = () => {
         }
     };
 
+    const parseFileInfo = (jsonStr: string) => {
+        try {
+            if (!jsonStr) return { filename: '-', size: 0 };
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            return { filename: '-', size: 0 };
+        }
+    };
+
+    const columns: ColumnDef<FeedbackTicket>[] = [
+        { header: 'ID Pengajuan', accessor: 'id_pengajuan', id: 'id_pengajuan' },
+        {
+            header: 'Tanggal Unggah',
+            accessor: (row) => new Date(row.tgl_pengajuan).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            id: 'tgl_pengajuan'
+        },
+        {
+            header: 'Nama File',
+            accessor: (row) => {
+                const info = parseFileInfo(row.data_baru);
+                return (
+                    <div>
+                        <div className="font-bold text-gray-900 flex items-center gap-2">
+                            <i className="fas fa-file-excel text-green-600"></i>
+                            {info.filename}
+                        </div>
+                        <div className="text-xs text-gray-500">{Math.round((info.size || 0) / 1024)} KB</div>
+                    </div>
+                );
+            },
+            id: 'file_info'
+        },
+        {
+            header: 'Status Approval',
+            accessor: (row) => {
+                let badgeClass = "bg-gray-100 text-gray-800 border bg-gray-200";
+                let text = row.status_approval;
+
+                if (text === 'APPROVED') {
+                    badgeClass = "bg-green-100 text-green-800 border border-green-200";
+                    text = "Selesai (Approved)";
+                } else if (text === 'REJECTED') {
+                    badgeClass = "bg-red-100 text-red-800 border border-red-200";
+                    text = "Ditolak";
+                } else if (text.includes('PENDING')) {
+                    badgeClass = "bg-amber-100 text-amber-800 border border-amber-200";
+                    text = "Menunggu Approval";
+                }
+
+                return (
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`}>
+                        {text}
+                    </span>
+                );
+            },
+            id: 'status_approval'
+        }
+    ];
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-8 w-full max-w-4xl mx-auto"
+            className="p-8 w-full max-w-6xl mx-auto"
         >
             <div className="mb-8 text-center sm:text-left">
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight">Upload Feedback BPJS</h1>
@@ -52,78 +153,71 @@ const UploadFeedbackBpjs: React.FC = () => {
                 </p>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-                <div className="p-8">
-                    <div
-                        className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center transition-all ${file ? 'border-green-400 bg-green-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-bri-blue'}`}
-                    >
-                        <i className={`fas text-4xl mb-4 ${file ? 'fa-file-excel text-green-500' : 'fa-cloud-upload-alt text-gray-400'}`}></i>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <div className="lg:col-span-1">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-6">
+                        <div className="p-6 border-b border-gray-100 bg-gray-50">
+                            <h3 className="font-bold text-gray-900">Form Unggah File</h3>
+                        </div>
+                        <div className="p-6">
+                            <div
+                                className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all ${file ? 'border-green-400 bg-green-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-bri-blue'}`}
+                            >
+                                <i className={`fas text-4xl mb-4 ${file ? 'fa-file-excel text-green-500' : 'fa-cloud-upload-alt text-gray-400'}`}></i>
 
-                        {file ? (
-                            <div className="text-center">
-                                <p className="text-sm font-bold text-gray-800 mb-1">{file.name}</p>
-                                <p className="text-xs text-gray-500 mb-4">{Math.round(file.size / 1024)} KB</p>
-                                <button
-                                    onClick={() => setFile(null)}
-                                    className="text-xs text-red-500 hover:text-red-700 font-bold hover:underline"
-                                >
-                                    Pilih File Lain
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="text-center">
-                                <p className="text-sm font-bold text-gray-700 mb-2">Pilih File Kesepakatan / Feedback BPJS</p>
-                                <p className="text-xs text-gray-500 mb-6">Format didukung: .csv, .xls, .xlsx (Max 5MB)</p>
+                                {file ? (
+                                    <div className="text-center w-full">
+                                        <p className="text-sm font-bold text-gray-800 mb-1 truncate px-2">{file.name}</p>
+                                        <p className="text-xs text-gray-500 mb-4">{Math.round(file.size / 1024)} KB</p>
+                                        <button
+                                            onClick={() => setFile(null)}
+                                            className="text-xs text-red-500 hover:text-red-700 font-bold hover:underline"
+                                        >
+                                            Pilih File Lain
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="text-center">
+                                        <p className="text-xs text-gray-500 mb-4">Format: .csv, .xls, .xlsx (Max 5MB)</p>
 
-                                <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-sm inline-flex items-center gap-2">
-                                    <i className="fas fa-search"></i> Telusuri File
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
+                                        <label className="cursor-pointer bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-sm inline-flex items-center gap-2">
+                                            <i className="fas fa-search"></i> Telusuri
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                                onChange={handleFileChange}
+                                            />
+                                        </label>
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
+
+                        <div className="bg-gray-50 p-4 border-t border-gray-100 flex justify-end">
+                            <button
+                                onClick={handleUpload}
+                                disabled={!file || loading}
+                                className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2 ${file ? 'bg-bri-blue text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                            >
+                                {loading ? 'Mengunggah...' : 'Ajukan (Submit)'}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div className="bg-gray-50 p-6 border-t border-gray-100 flex justify-end">
-                    <button
-                        onClick={handleUpload}
-                        disabled={!file || loading}
-                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${file ? 'bg-bri-blue text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
-                    >
-                        {loading ? (
-                            <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                Mengunggah...
-                            </>
-                        ) : (
-                            <>
-                                <i className="fas fa-paper-plane"></i> Ajukan ke Checker
-                            </>
-                        )}
-                    </button>
-                </div>
-            </div>
+                <div className="lg:col-span-2">
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-gray-900">Riwayat Unggahan & Approval</h2>
+                    </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-5">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 text-bri-blue flex items-center justify-center font-bold mb-3">1</div>
-                    <h4 className="text-sm font-bold text-blue-900 mb-1">Unggah (Maker)</h4>
-                    <p className="text-xs text-blue-800">Pilih dan unggah dokumen feedback dari BPJS Kesehatan.</p>
-                </div>
-                <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-5">
-                    <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center font-bold mb-3">2</div>
-                    <h4 className="text-sm font-bold text-yellow-900 mb-1">Validasi (Checker)</h4>
-                    <p className="text-xs text-yellow-800">Staff Checker memverifikasi keabsahan dokumen sebelum diteruskan.</p>
-                </div>
-                <div className="bg-green-50 border border-green-100 rounded-xl p-5">
-                    <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold mb-3">3</div>
-                    <h4 className="text-sm font-bold text-green-900 mb-1">Persetujuan (Signer)</h4>
-                    <p className="text-xs text-green-800">Sistem otomatis memproses data dan menerbitkan SK begitu disetujui.</p>
+                    <DataTable
+                        data={history}
+                        columns={columns}
+                        loading={historyLoading}
+                        exportFileName="Riwayat_Feedback_BPJS"
+                        onView={(row) => alert(`Detail File: ${parseFileInfo(row.data_baru).filename}\nStatus: ${row.status_approval}`)}
+                    />
                 </div>
             </div>
         </motion.div>

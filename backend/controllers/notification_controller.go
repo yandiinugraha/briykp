@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"log"
+
 	"briyjkp/database"
 	"briyjkp/models"
 
@@ -23,6 +25,7 @@ func GetNotifications(c *fiber.Ctx) error {
 
 	// Fetch notifications designated for this specific user OR their role
 	if err := database.DB.Where("user_id = ? OR role = ?", userIDStr, roleStr).Order("created_at desc").Limit(20).Find(&notifications).Error; err != nil {
+		log.Println("GetNotifications SQL Error:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch notifications"})
 	}
 
