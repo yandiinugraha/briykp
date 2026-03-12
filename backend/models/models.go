@@ -307,11 +307,15 @@ type TRefundPremi struct {
 type TInvestmentProposal struct {
 	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	ProposalNo     string    `gorm:"type:varchar(50);unique;not null" json:"proposal_no"`
-	JenisInvestasi string    `gorm:"type:varchar(50);not null" json:"jenis_investasi"` // OBLIGASI, SAHAM, REKSADANA
+	JenisInvestasi string    `gorm:"type:varchar(50);not null" json:"jenis_investasi"` // OBLIGASI, SAHAM
+	KodeEfek       string    `gorm:"type:varchar(50);not null" json:"kode_efek"`      // ISIN / Series
 	NamaEmiten     string    `gorm:"type:varchar(150);not null" json:"nama_emiten"`
+	TipeTransaksi  string    `gorm:"type:varchar(20);not null" json:"tipe_transaksi"`  // BELI, JUAL
 	NominalUsulan  float64   `gorm:"type:decimal(18,2);not null" json:"nominal_usulan"`
+	RangeHarga     string    `gorm:"type:varchar(100)" json:"range_harga"`
+	RangeYield     string    `gorm:"type:varchar(100)" json:"range_yield"`
 	Keterangan     string    `gorm:"type:text" json:"keterangan"`
-	StatusApproval string    `gorm:"type:varchar(30);default:'DRAFT'" json:"status_approval"`
+	StatusApproval string    `gorm:"type:varchar(30);default:'PENDING'" json:"status_approval"` // PENDING, CHECKED, FINAL_APPROVED, REJECTED
 	MakerID        string    `gorm:"type:varchar(50)" json:"maker_id"`
 	CheckerID      *string   `gorm:"type:varchar(50)" json:"checker_id"`
 	SignerID       *string   `gorm:"type:varchar(50)" json:"signer_id"`
@@ -326,10 +330,13 @@ type TInvestmentTransaction struct {
 	ProposalID     uint      `gorm:"index" json:"proposal_id"`
 	TransactionNo  string    `gorm:"type:varchar(50);unique;not null" json:"transaction_no"`
 	JenisTransaksi string    `gorm:"type:varchar(20)" json:"jenis_transaksi"` // BUY, SELL
+	KodeEfek       string    `gorm:"type:varchar(50)" json:"kode_efek"`
 	NamaEmiten     string    `gorm:"type:varchar(150)" json:"nama_emiten"`
 	Nominal        float64   `gorm:"type:decimal(18,2)" json:"nominal"`
-	Harga          float64   `gorm:"type:decimal(18,2)" json:"harga"`
+	HargaPercent   float64   `gorm:"type:decimal(10,5)" json:"harga_percent"` // Harga dalam % (Clean Price)
+	Yield          float64   `gorm:"type:decimal(10,5)" json:"yield"`
 	TglTransaksi   time.Time `gorm:"type:date" json:"tgl_transaksi"`
+	Sekuritas      string    `gorm:"type:varchar(150)" json:"sekuritas"`
 	Status         string    `gorm:"type:varchar(30);default:'SETTLED'" json:"status"`
 	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
 }

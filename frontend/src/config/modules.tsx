@@ -68,6 +68,7 @@ export const MODULES: ErpModule[] = [
                         children: [
                             { label: 'Data Iuran', path: '/kepesertaan/iuran/data' },
                             { label: 'Approval Iuran', path: '/kepesertaan/iuran/approval' },
+                            { label: 'Settlement Iuran', path: '/kepesertaan/iuran/settlement' },
                             { label: 'Proses Anggota Baru', path: '/kepesertaan/iuran/new-member' },
                             { label: 'Proses Anggota Non-Iuran', path: '/kepesertaan/iuran/missing' },
                             { label: 'Tinjau Data Ganda/Update', path: '/kepesertaan/iuran/duplicate' },

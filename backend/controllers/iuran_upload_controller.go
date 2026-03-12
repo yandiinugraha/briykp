@@ -560,3 +560,41 @@ func ApproveNewMember(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"message": "Peserta baru berhasil di-approve & ditambahkan ke database master."})
 }
+
+// GetIuranSettlement returns summary of approved iuran batches for dashboard/settlement menu
+func GetIuranSettlement(c *fiber.Ctx) error {
+	var results []struct {
+		Bulan          int     `json:"bulan"`
+		Tahun          int     `json:"tahun"`
+		TotalTht       float64 `json:"total_tht"`
+		TotalProspens float64 `json:"total_prospens"`
+		CountTht       int     `json:"count_tht"`
+		CountProspens int     `json:"count_prospens"`
+		Status         string  `json:"status"`
+	}
+
+	// Subquery to get approved THT
+	thtQuery := database.DB.Table("t_iuran_upload").
+		Select("bulan, tahun, SUM(total_nominal) as total_tht, SUM(total_rows) as count_tht").
+		Where("jenis_iuran = 'THT' AND status_approval = 'APPROVED'").
+		Group("bulan, tahun")
+
+	// Subquery to get approved PROSPENS
+	prosQuery := database.DB.Table("t_iuran_upload").
+		Select("bulan, tahun, SUM(total_nominal) as total_prospens, SUM(total_rows) as count_prospens").
+		Where("jenis_iuran = 'PROSPENS' AND status_approval = 'APPROVED'").
+		Group("bulan, tahun")
+
+	// Join them
+	err := database.DB.Table("(?) as tht", thtQuery).
+		Select("tht.bulan, tht.tahun, tht.total_tht, pros.total_prospens, tht.count_tht, pros.count_prospens, 'APPROVED' as status").
+		Joins("JOIN (?) as pros ON tht.bulan = pros.bulan AND tht.tahun = pros.tahun", prosQuery).
+		Order("tht.tahun DESC, tht.bulan DESC").
+		Scan(&results).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengambil data settlement"})
+	}
+
+	return c.JSON(results)
+}

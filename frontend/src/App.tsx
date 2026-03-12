@@ -29,6 +29,7 @@ import IuranPreview from './pages/kepesertaan/IuranPreview';
 import IuranNewMember from './pages/kepesertaan/IuranNewMember';
 import IuranMissing from './pages/kepesertaan/IuranMissing';
 import IuranDuplicate from './pages/kepesertaan/IuranDuplicate';
+import SettlementIuran from './pages/kepesertaan/SettlementIuran';
 
 // PHK
 import PhkUploadPage from './pages/kepesertaan/PhkUpload';
@@ -147,6 +148,7 @@ const AppContent = () => {
           <Route path="/kepesertaan/iuran/new-member" element={<Page pageKey="iuran-new-member"><IuranNewMember /></Page>} />
           <Route path="/kepesertaan/iuran/missing" element={<Page pageKey="iuran-missing"><IuranMissing /></Page>} />
           <Route path="/kepesertaan/iuran/duplicate" element={<Page pageKey="iuran-duplicate"><IuranDuplicate /></Page>} />
+          <Route path="/kepesertaan/iuran/settlement" element={<Page pageKey="iuran-settlement"><SettlementIuran /></Page>} />
 
           {/* ─── KEPESERTAAN: Pembayaran Manfaat THT ──────────── */}
           <Route path="/kepesertaan/tht/input" element={<Page pageKey="tht-input"><ThtInput /></Page>} />

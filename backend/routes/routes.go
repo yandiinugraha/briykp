@@ -72,6 +72,7 @@ func Setup(app *fiber.App) {
 	kepesertaan.Get("/iuran/discrepancies/:bulan/:tahun", controllers.GetIuranDiscrepancies)
 	kepesertaan.Get("/iuran/discrepancy/:bulan/:tahun", controllers.GetIuranDiscrepancies)
 	kepesertaan.Get("/iuran/penampungan/:bulan/:tahun", controllers.GetIuranPenampungan)
+	kepesertaan.Get("/iuran/settlement", controllers.GetIuranSettlement)
 
 	// PHK Upload
 	kepesertaan.Post("/phk/upload", controllers.UploadPhkFile)
@@ -103,6 +104,7 @@ func Setup(app *fiber.App) {
 	investasi.Post("/proposals/upload", controllers.UploadInvestmentProposal)
 	investasi.Post("/proposals/:id/approve", controllers.ApproveInvestmentProposal)
 	investasi.Get("/transactions", controllers.GetInvestmentTransactions)
+	investasi.Post("/transactions/upload", controllers.UploadInvestmentTransaction)
 
 	// Master Data (Helper for Front-end)
 	master := protected.Group("/master")
