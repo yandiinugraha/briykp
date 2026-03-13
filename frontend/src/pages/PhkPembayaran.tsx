@@ -19,6 +19,7 @@ const PhkPembayaran: React.FC = () => {
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [formData, setFormData] = useState({ total_premi: 0 });
     const [submitLoading, setSubmitLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchPembayaran();
@@ -28,7 +29,7 @@ const PhkPembayaran: React.FC = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/finance/pembayaran', {
+            const res = await axios.get(`${apiUrl}/finance/pembayaran`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -50,7 +51,7 @@ const PhkPembayaran: React.FC = () => {
         setSubmitLoading(true);
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/finance/pembayaran', {
+            await axios.post(`${apiUrl}/finance/pembayaran`, {
                 tanggal: new Date().toISOString(),
                 total_premi: formData.total_premi
             }, {

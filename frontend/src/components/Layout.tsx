@@ -28,6 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [notifications, setNotifications] = useState<any[]>([]);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const notifRef = useRef<HTMLDivElement>(null);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     // ─── ACTIVE MODULE DETECTION ───────────────────────────────────
     const activeModule = React.useMemo(() => {
@@ -68,7 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const fetchNotifications = async () => {
         if (!user) return;
         try {
-            const res = await axios.get('http://localhost:3000/api/notifications');
+            const res = await axios.get(`${apiUrl}/notifications`);
             setNotifications(res.data || []);
         } catch (error) {
             console.error("Error fetching notifications", error);
@@ -93,7 +94,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const markAsRead = async (id: number) => {
         try {
-            await axios.put(`http://localhost:3000/api/notifications/${id}/read`);
+            await axios.put(`${apiUrl}/notifications/${id}/read`);
             fetchNotifications();
         } catch (error) {
             console.error("Error marking read", error);

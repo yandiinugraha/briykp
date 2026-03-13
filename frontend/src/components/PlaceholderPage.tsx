@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Construction, Plus, Edit2, Trash2, Search, Download } from 'lucide-react';
+import { Construction, Plus, Edit2, Trash2, Download } from 'lucide-react';
 import { DataTable } from './DataTable';
 
 interface PlaceholderPageProps {

@@ -50,6 +50,7 @@ const LikuiditasDashboard = () => {
     const { token } = useAuth();
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchLiquidity();
@@ -58,7 +59,7 @@ const LikuiditasDashboard = () => {
     const fetchLiquidity = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:3000/api/investasi/likuiditas', {
+            const res = await axios.get(`${apiUrl}/investasi/likuiditas`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setData(res.data || []);
@@ -76,8 +77,8 @@ const LikuiditasDashboard = () => {
 
     const formatCompact = (val: number) => {
         if (val >= 1e12) return `Rp ${(val / 1e12).toFixed(1)}T`;
-        if (val >= 1e9) return `Rp ${(val / 1e9).toFixed(1)}M`;
-        if (val >= 1e6) return `Rp ${(val / 1e6).toFixed(1)}jt`;
+        if (val >= 1e9) return `Rp ${(val / 1e9).toFixed(1)} M`;
+        if (val >= 1e6) return `Rp ${(val / 1e6).toFixed(1)} jt`;
         return formatCurrency(val);
     };
 
@@ -192,7 +193,7 @@ const LikuiditasDashboard = () => {
                                     dataKey="value"
                                 >
                                     {pieData.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell - ${index} `} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
                                 <Tooltip

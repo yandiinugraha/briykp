@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
-    Upload, FileText, CheckCircle2, Clock, XCircle,
-    AlertCircle, Search, Filter, ArrowRight, TrendingUp, Info
+    Upload, CheckCircle2, XCircle
 } from 'lucide-react';
 import { DataTable, type ColumnDef } from '../../components/DataTable';
 import { useAuth } from '../../context/AuthContext';
@@ -55,18 +54,19 @@ const formatCurrency = (val: number) => new Intl.NumberFormat('id-ID', { style: 
 
 // --- Component: ObligasiProposal ---
 export const ObligasiProposal = () => {
-    const { token, role } = useAuth();
+    const { token, user } = useAuth();
     const [proposals, setProposals] = useState<InvestmentProposal[]>([]);
     const [loading, setLoading] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => { fetchProposals(); }, []);
 
     const fetchProposals = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:3000/api/investasi/proposals', {
+            const res = await axios.get(`${apiUrl}/investasi/proposals`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Filter only OBLIGASI
@@ -81,7 +81,7 @@ export const ObligasiProposal = () => {
         const formData = new FormData();
         formData.append('file', file);
         try {
-            await axios.post('http://localhost:3000/api/investasi/proposals/upload', formData, {
+            await axios.post(`${apiUrl}/investasi/proposals/upload`, formData, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
             alert('Proposal Obligasi berhasil diunggah!');
@@ -93,7 +93,7 @@ export const ObligasiProposal = () => {
     const handleAction = async (id: number, status: 'APPROVED' | 'REJECTED') => {
         const catatan = prompt(`Catatan ${status}:`) || '';
         try {
-            await axios.post(`http://localhost:3000/api/investasi/proposals/${id}/approve`,
+            await axios.post(`${apiUrl}/investasi/proposals/${id}/approve`,
                 { status, catatan },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -132,8 +132,8 @@ export const ObligasiProposal = () => {
         {
             header: 'Aksi',
             accessor: (row) => {
-                const canCheck = role === 'Admin' && row.status_approval === 'PENDING';
-                const canSign = role === 'Super Admin' && row.status_approval === 'CHECKED';
+                const canCheck = user?.role === 'Admin' && row.status_approval === 'PENDING';
+                const canSign = user?.role === 'Super Admin' && row.status_approval === 'CHECKED';
                 if (!canCheck && !canSign) return <span className="text-gray-400 text-xs">-</span>;
                 return (
                     <div className="flex gap-1">
@@ -156,7 +156,7 @@ export const ObligasiProposal = () => {
                     </h1>
                     <p className="text-gray-500 text-sm">Alur Maker-Checker-Signer untuk Usulan obligasi.</p>
                 </div>
-                {role === 'Staff' && (
+                {user?.role === 'Staff' && (
                     <button onClick={() => setShowUpload(true)} className="flex items-center gap-2 bg-bri-blue text-white px-5 py-2.5 rounded-xl font-bold hover:scale-105 transition-all shadow-lg">
                         <Upload size={18} /> Upload Proposal
                     </button>
@@ -190,18 +190,19 @@ export const ObligasiProposal = () => {
 
 // --- Component: ObligasiTransaksi ---
 export const ObligasiTransaksi = () => {
-    const { token, role } = useAuth();
+    const { token, user } = useAuth();
     const [txs, setTxs] = useState<InvestmentTransaction[]>([]);
     const [loading, setLoading] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => { fetchTxs(); }, []);
 
     const fetchTxs = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:3000/api/investasi/transactions', {
+            const res = await axios.get(`${apiUrl}/investasi/transactions`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTxs(res.data || []);
@@ -215,7 +216,7 @@ export const ObligasiTransaksi = () => {
         const formData = new FormData();
         formData.append('file', file);
         try {
-            await axios.post('http://localhost:3000/api/investasi/transactions/upload', formData, {
+            await axios.post(`${apiUrl}/investasi/transactions/upload`, formData, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
             alert('Transaksi Obligasi berhasil diunggah!');
@@ -246,7 +247,7 @@ export const ObligasiTransaksi = () => {
                     </h1>
                     <p className="text-gray-500 text-sm">Detail realisasi transaksi berdasarkan proposal yang disetujui.</p>
                 </div>
-                {role === 'Staff' && (
+                {user?.role === 'Staff' && (
                     <button onClick={() => setShowUpload(true)} className="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold hover:scale-105 transition-all shadow-lg">
                         <Upload size={18} /> Upload Transaksi
                     </button>
@@ -285,8 +286,8 @@ import PlaceholderPage from '../../components/PlaceholderPage';
 export const ObligasiSettlement = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Settlement" stepNumber={3} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
 export const ObligasiLikuiditas = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Likuiditas" stepNumber={4} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
 export const ObligasiAkuntansi = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Akuntansi" stepNumber={5} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
-export const ObligasiAccrual = () => <PlaceholderPage moduleName="Investasi" featureName="Perhitungan Accrual Bunga & Amortisasi" stepNumber={6} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
-export const ObligasiKupon = () => <PlaceholderPage moduleName="Investasi" featureName="Kupon" stepNumber={7} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
-export const ObligasiValuasi = () => <PlaceholderPage moduleName="Investasi" featureName="Valuasi Mark to Market" stepNumber={8} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
-export const ObligasiJatuhTempo = () => <PlaceholderPage moduleName="Investasi" featureName="Jatuh Tempo" stepNumber={9} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
-export const ObligasiLaporan = () => <PlaceholderPage moduleName="Investasi" featureName="Laporan" stepNumber={10} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
+export const ObligasiAccrual = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Perhitungan Accrual Bunga & Amortisasi" stepNumber={6} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
+export const ObligasiKupon = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Kupon" stepNumber={7} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
+export const ObligasiValuasi = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Valuasi Mark to Market" stepNumber={8} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
+export const ObligasiJatuhTempo = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Jatuh Tempo" stepNumber={9} totalSteps={10} steps={STEPS} accentColor="#F37021" />;
+export const ObligasiLaporan = () => <PlaceholderPage moduleName="Investasi" featureName="Obligasi" stepName="Laporan" stepNumber={10} totalSteps={10} steps={STEPS} accentColor="#F37021" />;

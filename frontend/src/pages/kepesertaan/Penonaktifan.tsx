@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { DataTable, type ColumnDef } from '../../components/DataTable';
@@ -15,6 +15,7 @@ interface PesertaData {
 const PenonaktifanBase = ({ stepName, stepNumber, description }: { stepName: string, stepNumber: number, description: string }) => {
     const [peserta, setPeserta] = useState<PesertaData[]>([]);
     const [loading, setLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchPeserta();
@@ -25,7 +26,7 @@ const PenonaktifanBase = ({ stepName, stepNumber, description }: { stepName: str
         try {
             const token = localStorage.getItem('token');
             // Mocking data by just fetching all peserta 
-            const res = await axios.get('http://localhost:3000/api/peserta', {
+            const res = await axios.get(`${apiUrl}/peserta`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPeserta(res.data);
@@ -37,10 +38,10 @@ const PenonaktifanBase = ({ stepName, stepNumber, description }: { stepName: str
     };
 
     const handleDelete = async (row: PesertaData) => {
-        if (window.confirm(`Konfirmasi penonaktifan/penghapusan data untuk: ${row.nama_peserta}?`)) {
+        if (window.confirm(`Konfirmasi penonaktifan / penghapusan data untuk: ${row.nama_peserta} ? `)) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.delete(`http://localhost:3000/api/peserta/${row.id_peserta}`, {
+                await axios.delete(`${apiUrl}/peserta/${row.id_peserta}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 alert('Data berhasil dinonaktifkan.');

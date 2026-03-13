@@ -19,6 +19,7 @@ const PendaftaranBpjs: React.FC = () => {
     const [filterDate, setFilterDate] = useState('');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [submitLoading, setSubmitLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchCandidates('');
@@ -29,8 +30,8 @@ const PendaftaranBpjs: React.FC = () => {
         try {
             const token = localStorage.getItem('token');
             const url = date
-                ? `http://localhost:3000/api/bpjs/candidates?tgl_mutasi=${date}`
-                : 'http://localhost:3000/api/bpjs/candidates';
+                ? `${apiUrl}/bpjs/candidates?tgl_mutasi=${date}`
+                : `${apiUrl}/bpjs/candidates`;
 
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -69,7 +70,7 @@ const PendaftaranBpjs: React.FC = () => {
         setSubmitLoading(true);
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/bpjs/submit',
+            await axios.post(`${apiUrl}/bpjs/submit`,
                 { id_peserta_list: selectedIds },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

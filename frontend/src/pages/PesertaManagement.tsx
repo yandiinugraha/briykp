@@ -52,6 +52,7 @@ const PesertaManagement: React.FC = () => {
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         if (token) {
@@ -64,7 +65,7 @@ const PesertaManagement: React.FC = () => {
         if (!token) return;
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:3000/api/peserta', {
+            const response = await axios.get(`${apiUrl}/peserta`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPesertaList(response.data || []);
@@ -81,10 +82,10 @@ const PesertaManagement: React.FC = () => {
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const [k1, k2, b1, b2] = await Promise.all([
-                axios.get('http://localhost:3000/api/master/kelompok', config),
-                axios.get('http://localhost:3000/api/master/kelas', config),
-                axios.get('http://localhost:3000/api/master/status-bpjs', config),
-                axios.get('http://localhost:3000/api/master/status-brilife', config)
+                axios.get(`${apiUrl}/master/kelompok`, config),
+                axios.get(`${apiUrl}/master/kelas`, config),
+                axios.get(`${apiUrl}/master/status-bpjs`, config),
+                axios.get(`${apiUrl}/master/status-brilife`, config)
             ]);
             setKelompokOpts(k1.data);
             setKelasOpts(k2.data);
@@ -164,14 +165,14 @@ const PesertaManagement: React.FC = () => {
                     data_baru: JSON.stringify(formData)
                 };
 
-                await axios.post('http://localhost:3000/api/approval/submit', pendaftaranData, config);
+                await axios.post(`${apiUrl}/approval/submit`, pendaftaranData, config);
                 alert('Berhasil! Pengajuan telah dikirim ke Approval Workspace untuk diverifikasi oleh Admin (Checker).');
             } else {
                 // ADMIN flow: Direct commit (as originally implemented)
                 if (selectedPeserta) {
-                    await axios.put(`http://localhost:3000/api/peserta/${selectedPeserta.id_peserta}`, formData, config);
+                    await axios.put(`${apiUrl}/peserta/${selectedPeserta.id_peserta}`, formData, config);
                 } else {
-                    await axios.post('http://localhost:3000/api/peserta', formData, config);
+                    await axios.post(`${apiUrl}/peserta`, formData, config);
                 }
                 alert('Data berhasil disimpan secara langsung.');
             }
@@ -190,7 +191,7 @@ const PesertaManagement: React.FC = () => {
         if (!window.confirm('Apakah Anda yakin ingin menghapus peserta ini?')) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/api/peserta/${id}`, {
+            await axios.delete(`${apiUrl}/peserta/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchPeserta();

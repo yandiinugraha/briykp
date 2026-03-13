@@ -5,7 +5,9 @@ import { DataTable } from '../../components/DataTable';
 import type { ColumnDef } from '../../components/DataTable';
 import { RefreshCcw, Eye, Settings2 } from 'lucide-react';
 
-const API = 'http://localhost:3000/api/kepesertaan/iuran';
+const apiUrl = import.meta.env.VITE_API_URL;
+
+const API = `${apiUrl}/kepesertaan/iuran`;
 
 const MONTHS = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -36,7 +38,7 @@ const IuranDuplicate: React.FC = () => {
     const loadData = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${API}/discrepancy/${bulan}/${tahun}`, { headers });
+            const res = await axios.get(`${API} /discrepancy/${bulan}/${tahun}`, { headers });
             const allDiscrepancies: Discrepancy[] = res.data.discrepancies || [];
             setData(allDiscrepancies.filter(d =>
                 d.jenis_selisih === 'DUPLICATE_IURAN' || d.jenis_selisih === 'THT_PROSPENS_DIFF'

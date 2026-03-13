@@ -22,6 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [isLoading, setIsLoading] = useState(true);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     // Synchronize axios defaults whenever token changes
     useEffect(() => {
@@ -56,7 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const fetchMe = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/me');
+            const res = await axios.get(`${apiUrl}/me`);
             setUser({ id: 0, username: res.data.username, role: res.data.role });
         } catch (err) {
             console.error('Failed to fetch user', err);
@@ -67,7 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     const login = async (username: string, password: string) => {
-        const res = await axios.post('http://localhost:3000/api/login', { username, password });
+        const res = await axios.post(`${apiUrl}/login`, { username, password });
         const { token: newToken, user: newUser } = res.data;
 
         localStorage.setItem('token', newToken);

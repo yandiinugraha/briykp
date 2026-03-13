@@ -7,6 +7,7 @@ const SinkronisasiData: React.FC = () => {
     const [uploadResult, setUploadResult] = useState<{ total_row: number; inserted: number; failed: number } | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -26,7 +27,7 @@ const SinkronisasiData: React.FC = () => {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('http://localhost:3000/api/upload/peserta', formData, {
+            const response = await axios.post(`${apiUrl}/upload/peserta`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -95,7 +96,7 @@ const SinkronisasiData: React.FC = () => {
                             <button
                                 onClick={handleUpload}
                                 disabled={isUploading}
-                                className={`px-4 py-2 rounded-md font-medium text-white text-sm transition-all ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-bri-blue hover:bg-blue-800 shadow-md'}`}
+                                className={`px - 4 py - 2 rounded - md font - medium text - white text - sm transition - all ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-bri-blue hover:bg-blue-800 shadow-md'}`}
                             >
                                 {isUploading ? 'Memproses...' : 'Mulai Sinkronisasi'}
                             </button>

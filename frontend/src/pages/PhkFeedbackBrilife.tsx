@@ -16,6 +16,7 @@ const PhkFeedbackBrilife: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [history, setHistory] = useState<FeedbackTicket[]>([]);
     const [historyLoading, setHistoryLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchHistory();
@@ -25,7 +26,7 @@ const PhkFeedbackBrilife: React.FC = () => {
         setHistoryLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/approval/pendaftaran', {
+            const res = await axios.get(`${apiUrl}/approval/pendaftaran`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -125,7 +126,7 @@ const PhkFeedbackBrilife: React.FC = () => {
                 }
 
                 return (
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}`}>
+                    <span className={`inline - flex items - center px - 2.5 py - 0.5 rounded - full text - xs font - bold ${badgeClass}`}>
                         {text}
                     </span>
                 );
@@ -155,9 +156,9 @@ const PhkFeedbackBrilife: React.FC = () => {
                         </div>
                         <div className="p-6">
                             <div
-                                className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center transition-all ${file ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-bri-blue'}`}
+                                className={`border - 2 border - dashed rounded - xl p - 6 flex flex - col items - center justify - center transition - all ${file ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-bri-blue'}`}
                             >
-                                <i className={`fas text-4xl mb-4 ${file ? 'fa-file-excel text-blue-500' : 'fa-cloud-upload-alt text-gray-400'}`}></i>
+                                <i className={`fas text - 4xl mb - 4 ${file ? 'fa-file-excel text-blue-500' : 'fa-cloud-upload-alt text-gray-400'}`}></i>
 
                                 {file ? (
                                     <div className="text-center w-full">
@@ -192,7 +193,7 @@ const PhkFeedbackBrilife: React.FC = () => {
                             <button
                                 onClick={handleUpload}
                                 disabled={!file || loading}
-                                className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2 ${file ? 'bg-bri-blue text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                                className={`w - full py - 2.5 rounded - xl font - bold text - sm transition - all shadow - sm flex items - center justify - center gap - 2 ${file ? 'bg-bri-blue text-white hover:bg-blue-700 active:scale-95' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                             >
                                 {loading ? 'Mengunggah...' : 'Ajukan (Submit)'}
                             </button>

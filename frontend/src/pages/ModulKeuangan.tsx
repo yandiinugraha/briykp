@@ -26,6 +26,7 @@ const ModulKeuangan: React.FC = () => {
     // Detail Modal State
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedTrx, setSelectedTrx] = useState<PembayaranData | null>(null);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchHistory();
@@ -34,7 +35,7 @@ const ModulKeuangan: React.FC = () => {
     const fetchHistory = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:3000/api/finance/pembayaran');
+            const res = await axios.get(`${apiUrl}/finance/pembayaran`);
             setHistory(res.data || []);
             setFilteredHistory(res.data || []);
         } catch (error) {
@@ -58,7 +59,7 @@ const ModulKeuangan: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://localhost:3000/api/finance/pembayaran', {
+            await axios.post(`${apiUrl}/finance/pembayaran`, {
                 no_nota_dinas: nota,
                 tanggal: new Date().toISOString(), // Use today
                 total_premi: parseFloat(nominal)

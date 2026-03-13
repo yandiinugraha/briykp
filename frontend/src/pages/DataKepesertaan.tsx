@@ -23,6 +23,7 @@ const DataKepesertaan: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [page, setPage] = useState(1);
     const limit = 20;
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         if (token) {
@@ -35,10 +36,10 @@ const DataKepesertaan: React.FC = () => {
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const [kelRes, kelBPJS, kelBrilife, kelKelas] = await Promise.all([
-                axios.get('http://localhost:3000/api/master/kelompok', config),
-                axios.get('http://localhost:3000/api/master/status-bpjs', config),
-                axios.get('http://localhost:3000/api/master/status-brilife', config),
-                axios.get('http://localhost:3000/api/master/kelas', config)
+                axios.get(`${apiUrl}/master/kelompok`, config),
+                axios.get(`${apiUrl}/master/status-bpjs`, config),
+                axios.get(`${apiUrl}/master/status-brilife`, config),
+                axios.get(`${apiUrl}/master/kelas`, config)
             ]);
             setOptKelompok(kelRes.data || []);
             setOptBpjs(kelBPJS.data || []);
@@ -94,7 +95,7 @@ const DataKepesertaan: React.FC = () => {
     const fetchPeserta = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:3000/api/peserta', {
+            const response = await axios.get(`${apiUrl}/peserta`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPesertaList(response.data || []);
@@ -146,10 +147,10 @@ const DataKepesertaan: React.FC = () => {
 
             if (selectedPeserta) {
                 // Edit
-                await axios.put(`http://localhost:3000/api/peserta/${selectedPeserta.id_peserta}`, payload, config);
+                await axios.put(`${apiUrl}/peserta/${selectedPeserta.id_peserta}`, payload, config);
             } else {
                 // Add
-                await axios.post('http://localhost:3000/api/peserta', payload, config);
+                await axios.post(`${apiUrl}/peserta`, payload, config);
             }
             alert('Pengajuan berhasil! Menunggu approval dari Checker/Signer.');
             setIsModalOpen(false);

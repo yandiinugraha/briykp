@@ -89,6 +89,7 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
     const [portfolio, setPortfolio] = useState<any[]>([]);
     const [reportData, setReportData] = useState<any[]>([]);
     const [reportPeriod, setReportPeriod] = useState<'daily' | 'monthly' | 'yearly'>('daily');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchAllData();
@@ -102,10 +103,10 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
         setLoading(true);
         try {
             const [stocksRes, proposalsRes, txRes, portfolioRes] = await Promise.all([
-                axios.get('http://localhost:3000/api/investasi/saham/master', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/proposals', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/transactions', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/saham/portfolio', { headers: { Authorization: `Bearer ${token}` } })
+                axios.get(`${apiUrl}/investasi/saham/master`, { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get(`${apiUrl}/investasi/proposals`, { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get(`${apiUrl}/investasi/transactions`, { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get(`${apiUrl}/investasi/saham/portfolio`, { headers: { Authorization: `Bearer ${token}` } })
             ]);
 
             setStocks(stocksRes.data || []);
@@ -121,7 +122,7 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
 
     const fetchReports = async () => {
         try {
-            const res = await axios.get(`http://localhost:3000/api/investasi/saham/reports?period=${reportPeriod}`, {
+            const res = await axios.get(`${apiUrl}/investasi/saham/reports?period=${reportPeriod}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setReportData(res.data || []);
@@ -139,10 +140,10 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
             let method = 'post';
 
             switch (formType) {
-                case 'master': endpoint = 'http://localhost:3000/api/investasi/saham/master'; break;
-                case 'proposal': endpoint = 'http://localhost:3000/api/investasi/saham/proposals'; break;
-                case 'transaction': endpoint = 'http://localhost:3000/api/investasi/saham/transactions'; break;
-                case 'action': endpoint = 'http://localhost:3000/api/investasi/saham/action'; break;
+                case 'master': endpoint = `${apiUrl}/investasi/saham/master`; break;
+                case 'proposal': endpoint = `${apiUrl}/investasi/saham/proposals`; break;
+                case 'transaction': endpoint = `${apiUrl}/investasi/saham/transactions`; break;
+                case 'action': endpoint = `${apiUrl}/investasi/saham/action`; break;
             }
 
             if (formData.id && formType === 'master') {
@@ -173,8 +174,8 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
         if (!window.confirm('Hapus data ini?')) return;
         try {
             let endpoint = '';
-            if (type === 'master') endpoint = `http://localhost:3000/api/investasi/saham/master/${id}`;
-            if (type === 'proposal') endpoint = `http://localhost:3000/api/investasi/proposals/${id}`;
+            if (type === 'master') endpoint = `${apiUrl}/investasi/saham/master/${id}`;
+            if (type === 'proposal') endpoint = `${apiUrl}/investasi/proposals/${id}`;
 
             await axios.delete(endpoint, { headers: { Authorization: `Bearer ${token}` } });
             alert('Berhasil dihapus');
@@ -192,7 +193,7 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
         formDataUpload.append('file', file);
 
         try {
-            await axios.post('http://localhost:3000/api/investasi/proposals/upload', formDataUpload, {
+            await axios.post(`${apiUrl}/investasi/proposals/upload`, formDataUpload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -210,7 +211,7 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
 
     const handleApprove = async (id: number, action: string) => {
         try {
-            await axios.post(`http://localhost:3000/api/investasi/proposals/${id}/approve?action=${action}`, {}, {
+            await axios.post(`${apiUrl}/investasi/proposals/${id}/approve?action=${action}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert(`Proposal ${action === 'APPROVE' ? 'disetujui' : 'ditolak'}`);

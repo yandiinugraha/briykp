@@ -31,6 +31,8 @@ const ApprovalWorkspace: React.FC = () => {
     const [selectedId, setSelectedId] = useState('');
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [catatan, setCatatan] = useState('');
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const storageUrl = import.meta.env.VITE_STORAGE_URL;
 
     useEffect(() => {
         fetchTickets();
@@ -40,7 +42,7 @@ const ApprovalWorkspace: React.FC = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/approval/pendaftaran', {
+            const res = await axios.get(`${apiUrl}/approval/pendaftaran`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const mapped = res.data.map((item: any) => {
@@ -94,7 +96,7 @@ const ApprovalWorkspace: React.FC = () => {
         if (!selectedId) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/approval', {
+            await axios.post(`${apiUrl}/approval`, {
                 id_transaksi: selectedId,
                 action: action,
                 catatan: catatan
@@ -119,7 +121,7 @@ const ApprovalWorkspace: React.FC = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/approval/lampiran', formData, {
+            await axios.post(`${apiUrl}/approval/lampiran`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -137,7 +139,7 @@ const ApprovalWorkspace: React.FC = () => {
         if (!window.confirm("Yakin ingin menghapus dokumen ini?")) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:3000/api/approval/lampiran/${lampiranId}`, {
+            await axios.delete(`${apiUrl}/approval/lampiran/${lampiranId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchTickets();
@@ -443,7 +445,7 @@ const ApprovalWorkspace: React.FC = () => {
                                             {roleMode === 'MAKER' && (
                                                 <button onClick={() => handleDeleteFile(l.id)} className="text-red-500 text-xs hover:underline font-medium">Hapus</button>
                                             )}
-                                            <a href={`http://localhost:3000${l.file_url}`} target="_blank" rel="noreferrer" className="text-bri-blue text-xs bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 font-medium">Download</a>
+                                            <a href={`${storageUrl}${l.file_url}`} target="_blank" rel="noreferrer" className="text-bri-blue text-xs bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 font-medium">Download</a>
                                         </div>
                                     </div>
                                 ))}

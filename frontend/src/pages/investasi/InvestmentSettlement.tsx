@@ -12,6 +12,7 @@ const InvestmentSettlement = () => {
     const { token } = useAuth();
     const [txs, setTxs] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchTransactions();
@@ -20,7 +21,7 @@ const InvestmentSettlement = () => {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:3000/api/investasi/transactions', {
+            const res = await axios.get(`${apiUrl}/investasi/transactions`, {
                 headers: { Authorization: `Bearer ${token} ` }
             });
             // Show all transactions, focusing on PENDING if we had a more complex status flow
@@ -32,7 +33,7 @@ const InvestmentSettlement = () => {
     const handleSettle = async (id: number) => {
         if (!confirm('Proses instruksi pembayaran untuk transaksi ini?')) return;
         try {
-            await axios.post(`http://localhost:3000/api/investasi/transactions/${id}/settle`, {}, {
+            await axios.post(`${apiUrl}/investasi/transactions/${id}/settle`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert('Settlement berhasil diproses!');

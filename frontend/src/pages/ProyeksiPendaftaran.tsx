@@ -18,6 +18,7 @@ const ProyeksiPendaftaran: React.FC = () => {
     const [peserta, setPeserta] = useState<PesertaData[]>([]);
     const [loading, setLoading] = useState(false);
     const [filterDate, setFilterDate] = useState('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const fetchProyeksi = async (date: string) => {
         setLoading(true);
@@ -25,7 +26,7 @@ const ProyeksiPendaftaran: React.FC = () => {
             const token = localStorage.getItem('token');
             const url = date
                 ? `http://localhost:3000/api/proyeksi?tanggal=${date}`
-                : 'http://localhost:3000/api/proyeksi';
+                : `${apiUrl}/proyeksi`;
 
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -126,8 +127,8 @@ const ProyeksiPendaftaran: React.FC = () => {
                 data={peserta}
                 columns={columns}
                 loading={loading}
-                exportFileName={`Proyeksi_Pendaftaran_${filterDate || 'All'}`}
-                onEdit={(row) => alert(`Proses Data Mutasi untuk: ${row.nama_peserta}`)}
+                exportFileName={`Proyeksi_Pendaftaran_${filterDate || 'All'} `}
+                onEdit={(row) => alert(`Proses Data Mutasi untuk: ${row.nama_peserta} `)}
             />
         </motion.div>
     );

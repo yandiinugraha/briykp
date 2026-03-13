@@ -20,6 +20,7 @@ interface SkProspensData {
 const SkProspens: React.FC = () => {
     const [sks, setSks] = useState<SkProspensData[]>([]);
     const [loading, setLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchSks();
@@ -29,7 +30,7 @@ const SkProspens: React.FC = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/sk', {
+            const res = await axios.get(`${apiUrl}/sk`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSks(res.data || []);
@@ -45,11 +46,11 @@ const SkProspens: React.FC = () => {
             SURAT KEPUTUSAN PROSPENS\n
             Nomor: ${sk.id_sk}\n
             Tanggal: ${new Date(sk.tgl_diterbitkan).toLocaleDateString('id-ID')}\n\n
-            Diberikan Kepada:\n
+            Diberikan Kepada: \n
             Nama: ${sk.pendaftaran.peserta.nama_peserta}\n
             NIK: ${sk.pendaftaran.peserta.nik_bri}\n
             Jenis Mutasi: ${sk.pendaftaran.peserta.jenis_mutasi || '-'}\n\n
-            -- Dokumen Digital YKP BRI --
+            --Dokumen Digital YKP BRI--
         `;
 
         const blob = new Blob([content], { type: 'text/plain' });

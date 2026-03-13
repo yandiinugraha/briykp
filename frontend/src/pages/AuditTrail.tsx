@@ -9,13 +9,14 @@ const AuditTrail: React.FC = () => {
 
     const [filterModul, setFilterModul] = useState('');
     const [filterAction, setFilterAction] = useState('');
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const fetchLogs = async () => {
         try {
             const token = localStorage.getItem('token');
             const offset = (page - 1) * limit;
 
-            let url = `http://localhost:3000/api/audit?limit=${limit}&offset=${offset}`;
+            let url = `${apiUrl}/audit?limit=${limit}&offset=${offset}`;
             if (filterModul) url += `&modul=${filterModul}`;
             if (filterAction) url += `&action=${filterAction}`;
 
@@ -97,9 +98,9 @@ const AuditTrail: React.FC = () => {
                                     <div className="flex items-center gap-2">
                                         <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider">{log.modul}</span>
                                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${log.action === 'DELETE' || log.action === 'REJECT' ? 'bg-red-100 text-red-700' :
-                                                log.action === 'CREATE' || log.action === 'APPROVE' ? 'bg-green-100 text-green-700' :
-                                                    log.action === 'LOGIN' ? 'bg-blue-100 text-blue-700' :
-                                                        'bg-orange-100 text-orange-700'
+                                            log.action === 'CREATE' || log.action === 'APPROVE' ? 'bg-green-100 text-green-700' :
+                                                log.action === 'LOGIN' ? 'bg-blue-100 text-blue-700' :
+                                                    'bg-orange-100 text-orange-700'
                                             }`}>{log.action}</span>
                                     </div>
                                 </td>

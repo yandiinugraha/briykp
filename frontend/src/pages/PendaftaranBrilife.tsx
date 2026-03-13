@@ -19,6 +19,7 @@ const PendaftaranBrilife: React.FC = () => {
     const [filterDate, setFilterDate] = useState('');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [submitLoading, setSubmitLoading] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchCandidates('');
@@ -29,8 +30,8 @@ const PendaftaranBrilife: React.FC = () => {
         try {
             const token = localStorage.getItem('token');
             const url = date
-                ? `http://localhost:3000/api/brilife/candidates?tmt_pertanggungan=${date}`
-                : 'http://localhost:3000/api/brilife/candidates';
+                ? `${apiUrl}/brilife/candidates?tmt_pertanggungan=${date}`
+                : `${apiUrl}/brilife/candidates`;
 
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -69,7 +70,7 @@ const PendaftaranBrilife: React.FC = () => {
         setSubmitLoading(true);
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/brilife/submit',
+            await axios.post(`${apiUrl} /brilife/submit`,
                 { id_peserta_list: selectedIds },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -194,7 +195,7 @@ const PendaftaranBrilife: React.FC = () => {
                     <button
                         onClick={handleSubmit}
                         disabled={selectedIds.length === 0 || submitLoading}
-                        className={`px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${selectedIds.length > 0 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                        className={`px - 6 py - 2 rounded - lg font - bold text - sm transition - all shadow - sm flex items - center gap - 2 ${selectedIds.length > 0 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                     >
                         {submitLoading ? 'Mengajukan...' : 'Ajukan ke Checker'}
                     </button>

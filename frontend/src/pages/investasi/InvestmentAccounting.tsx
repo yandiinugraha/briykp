@@ -28,6 +28,7 @@ const InvestmentAccounting = () => {
         pajak_pph: 0,
         tanggal_cair: new Date().toISOString().split('T')[0]
     });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         fetchAllData();
@@ -37,9 +38,9 @@ const InvestmentAccounting = () => {
         setLoading(true);
         try {
             const [incRes, sumRes, portRes] = await Promise.all([
-                axios.get('http://localhost:3000/api/investasi/income', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/accounting-summary', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/saham/portfolio', { headers: { Authorization: `Bearer ${token}` } })
+                axios.get(`${apiUrl}/investasi/income`, { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get(`${apiUrl}/investasi/accounting-summary`, { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get(`${apiUrl}/investasi/saham/portfolio`, { headers: { Authorization: `Bearer ${token}` } })
             ]);
             setIncome(incRes.data || []);
             setSummary(sumRes.data || {});
@@ -51,7 +52,7 @@ const InvestmentAccounting = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/investasi/income', form, {
+            await axios.post(`${apiUrl}/investasi/income`, form, {
                 headers: { Authorization: `Bearer ${token} ` }
             });
             alert('Pendapatan investasi berhasil dicatat!');

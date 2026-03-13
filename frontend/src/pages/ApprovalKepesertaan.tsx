@@ -15,6 +15,7 @@ const ApprovalKepesertaan: React.FC = () => {
     const [catatan, setCatatan] = useState('');
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         if (token) fetchStaging();
@@ -23,7 +24,7 @@ const ApprovalKepesertaan: React.FC = () => {
     const fetchStaging = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:3000/api/peserta/staging/requests', {
+            const response = await axios.get(`${apiUrl}/peserta/staging/requests`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setStagingRequests(response.data || []);
@@ -44,7 +45,7 @@ const ApprovalKepesertaan: React.FC = () => {
     const submitReview = async () => {
         setIsProcessing(true);
         try {
-            await axios.post(`http://localhost:3000/api/peserta/staging/${selectedReq.id_staging}/process`,
+            await axios.post(`${apiUrl}/peserta/staging/${selectedReq.id_staging}/process`,
                 { action: reviewAction, catatan: catatan },
                 { headers: { Authorization: `Bearer ${token}` } });
 

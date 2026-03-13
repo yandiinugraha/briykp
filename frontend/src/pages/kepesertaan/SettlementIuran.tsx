@@ -32,7 +32,8 @@ import {
     Pie
 } from 'recharts';
 
-const API = 'http://localhost:3000/api/kepesertaan/iuran/settlement';
+const apiUrl = import.meta.env.VITE_API_URL;
+const API = `${apiUrl}/kepesertaan/iuran/settlement`;
 
 const MONTHS = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -72,10 +73,10 @@ const StatCard = ({ title, value, icon, trend, trendUp, color }: any) => {
     return (
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group">
             <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-xl ${colorClasses[color] || 'text-gray-600 bg-gray-50'} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded - xl ${colorClasses[color] || 'text-gray-600 bg-gray-50'} group - hover: scale - 110 transition - transform`}>
                     {icon}
                 </div>
-                <div className={`flex items-center gap-0.5 text-xs font-bold ${trendUp ? 'text-green-600' : 'text-red-500'}`}>
+                <div className={`flex items - center gap - 0.5 text - xs font - bold ${trendUp ? 'text-green-600' : 'text-red-500'} `}>
                     {trendUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                     {trend}
                 </div>
@@ -97,7 +98,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
     const [data, setData] = useState<SettlementData[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeTab, setActiveTab] = useState<'settlement' | 'history' | 'reports' | 'overview'>(defaultTab);
+    const [activeTab, setActiveTab] = useState<'settlement' | 'history' | 'reports' | 'overview'>(defaultTab === 'overview' ? 'settlement' : defaultTab);
     const [reportData, setReportData] = useState<any[]>([]);
     const [pesertaHistory, setPesertaHistory] = useState<any[]>([]);
     const [searchNik, setSearchNik] = useState('');
@@ -116,7 +117,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
         try {
             const [settlementRes, reportRes] = await Promise.all([
                 axios.get(API, { headers }).catch(e => { console.error('Settlement API Error:', e); return { data: [] }; }),
-                axios.get('http://localhost:3000/api/kepesertaan/iuran/report', { headers }).catch(e => { console.error('Report API Error:', e); return { data: [] }; })
+                axios.get(`${apiUrl}/kepesertaan/iuran/report`, { headers }).catch(e => { console.error('Report API Error:', e); return { data: [] }; })
             ]);
             setData(Array.isArray(settlementRes.data) ? settlementRes.data : []);
             setReportData(Array.isArray(reportRes.data) ? reportRes.data : []);
@@ -127,12 +128,12 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
         }
     };
 
-    const fetchHistory = async () => {
-        if (!searchNik) return;
-        setSearchingHistory(true);
-        try {
-            const res = await axios.get(`http://localhost:3000/api/kepesertaan/iuran/history/${encodeURIComponent(searchNik)}`, { headers });
-            setPesertaHistory(Array.isArray(res.data) ? res.data : []);
+const fetchHistory = async () => {
+    if (!searchNik) return;
+    setSearchingHistory(true);
+    try {
+        const res = await axios.get(`http://localhost:3000/api/kepesertaan/iuran/history/${encodeURIComponent(searchNik)}`, { headers });
+                    setPesertaHistory(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error('History fetch error:', err);
             setPesertaHistory([]);
@@ -146,11 +147,11 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
 
         setLoading(true);
         try {
-            await axios.delete('http://localhost:3000/api/kepesertaan/iuran/truncate', { headers });
+            await axios.delete(`${apiUrl}/kepesertaan/iuran/truncate`, { headers });
             alert('✅ Semua data iuran telah dikosongkan.');
             fetchData();
         } catch (err: any) {
-            alert(`❌ Gagal mengosongkan data: ${err.response?.data?.error || 'Error server'}`);
+            alert(`❌ Gagal mengosongkan data: ${ err.response?.data?.error || 'Error server' }`);
         } finally {
             setLoading(false);
         }
@@ -167,7 +168,8 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
             const matchMonth = !filterMonth || item.bulan.toString() === filterMonth;
             const matchRange = (!filterStartYear || item.tahun >= parseInt(filterStartYear)) &&
                 (!filterEndYear || item.tahun <= parseInt(filterEndYear));
-            const matchSearch = !searchTerm || `${formatBulan(item.bulan)} ${item.tahun} ${item.status || ''}`.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchSearch = !searchTerm || `${ formatBulan(item.bulan)
+        } ${ item.tahun } ${ item.status || '' } `.toLowerCase().includes(searchTerm.toLowerCase());
             return matchYear && matchMonth && matchRange && matchSearch;
         });
     }, [data, filterYear, filterMonth, filterStartYear, filterEndYear, searchTerm]);
@@ -194,7 +196,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
     }, [filteredData]);
 
     const chartData = filteredData.slice(0, 12).reverse().map(item => ({
-        name: `${formatBulanShort(item.bulan)} ${item.tahun || ''}`,
+        name: `${ formatBulanShort(item.bulan) } ${ item.tahun || '' } `,
         THT: Number(item.total_tht) || 0,
         Prospens: Number(item.total_prospens) || 0
     }));
@@ -207,7 +209,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
     const columns: ColumnDef<SettlementData>[] = [
         {
             header: 'Periode',
-            accessor: (row) => `${formatBulan(row.bulan)} ${row.tahun || ''}`,
+            accessor: (row) => `${ formatBulan(row.bulan) } ${ row.tahun || '' } `,
             id: 'periode'
         },
         {
@@ -222,12 +224,12 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
         },
         {
             header: 'Nominal THT',
-            accessor: (row) => `Rp ${(Number(row.total_tht) || 0).toLocaleString()}`,
+            accessor: (row) => `Rp ${ (Number(row.total_tht) || 0).toLocaleString() } `,
             id: 'nominal_tht'
         },
         {
             header: 'Nominal Prospens',
-            accessor: (row) => `Rp ${(Number(row.total_prospens) || 0).toLocaleString()}`,
+            accessor: (row) => `Rp ${ (Number(row.total_prospens) || 0).toLocaleString() } `,
             id: 'nominal_prospens'
         },
         {
@@ -251,7 +253,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                     'PENDING_SIGNER': 'bg-orange-100 text-orange-700',
                     'REJECTED': 'bg-red-100 text-red-700',
                 };
-                return <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${colors[status] || 'bg-gray-100 text-gray-600'}`}>{status.replace(/_/g, ' ')}</span>;
+                return <span className={`px - 2 py - 1 rounded - full text - [10px] font - bold ${ colors[status] || 'bg-gray-100 text-gray-600' } `}>{status.replace(/_/g, ' ')}</span>;
             },
             id: 'status'
         }
@@ -260,13 +262,13 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
     const historyColumns: ColumnDef<any>[] = [
         {
             header: 'Periode',
-            accessor: (row) => `${formatBulan(row.bulan)} ${row.tahun || ''}`,
+            accessor: (row) => `${ formatBulan(row.bulan) } ${ row.tahun || '' } `,
             id: 'periode'
         },
         {
             header: 'Jenis',
             accessor: (row) => (
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${row.jenis_iuran === 'THT' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                <span className={`px - 2 py - 0.5 rounded text - [10px] font - bold ${ row.jenis_iuran === 'THT' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700' } `}>
                     {row.jenis_iuran}
                 </span>
             ),
@@ -274,7 +276,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
         },
         {
             header: 'Nominal',
-            accessor: (row) => `Rp ${(Number(row.nominal_iuran) || 0).toLocaleString()}`,
+            accessor: (row) => `Rp ${ (Number(row.nominal_iuran) || 0).toLocaleString() } `,
             id: 'nominal'
         },
         {
@@ -423,19 +425,19 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
             <div className="flex border-b border-gray-200">
                 <button
                     onClick={() => setActiveTab('settlement')}
-                    className={`px-8 py-4 text-sm font-bold transition-all border-b-2 ${activeTab === 'settlement' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                    className={`px - 8 py - 4 text - sm font - bold transition - all border - b - 2 ${ activeTab === 'settlement' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' } `}
                 >
                     Overview Settlement
                 </button>
                 <button
                     onClick={() => setActiveTab('history')}
-                    className={`px-8 py-4 text-sm font-bold transition-all border-b-2 ${activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                    className={`px - 8 py - 4 text - sm font - bold transition - all border - b - 2 ${ activeTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' } `}
                 >
                     History Per User
                 </button>
                 <button
                     onClick={() => setActiveTab('reports')}
-                    className={`px-8 py-4 text-sm font-bold transition-all border-b-2 ${activeTab === 'reports' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                    className={`px - 8 py - 4 text - sm font - bold transition - all border - b - 2 ${ activeTab === 'reports' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700' } `}
                 >
                     Summary Reports
                 </button>
@@ -454,7 +456,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <StatCard
                                     title="Total Akumulasi Iuran"
-                                    value={`Rp ${totalNominal.toLocaleString()}`}
+                                    value={`Rp ${ totalNominal.toLocaleString() } `}
                                     icon={<Coins size={24} className="text-blue-600" />}
                                     trend="+12.5%"
                                     trendUp={true}
@@ -462,7 +464,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                                 />
                                 <StatCard
                                     title="Total Dana THT"
-                                    value={`Rp ${totalTht.toLocaleString()}`}
+                                    value={`Rp ${ totalTht.toLocaleString() } `}
                                     icon={<TrendingUp size={24} className="text-indigo-600" />}
                                     trend="+5.2%"
                                     trendUp={true}
@@ -470,7 +472,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                                 />
                                 <StatCard
                                     title="Total Dana Prospens"
-                                    value={`Rp ${totalProspens.toLocaleString()}`}
+                                    value={`Rp ${ totalProspens.toLocaleString() } `}
                                     icon={<BarChart3 size={24} className="text-orange-600" />}
                                     trend="+8.1%"
                                     trendUp={true}
@@ -499,11 +501,11 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                                             <BarChart data={chartData}>
                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} />
-                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} tickFormatter={(val: number) => `Rp${(val / 1000000).toFixed(0)}Jt`} />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af', fontWeight: 600 }} tickFormatter={(val: number) => `Rp${ (val / 1000000).toFixed(0) } Jt`} />
                                                 <Tooltip
                                                     cursor={{ fill: '#f8fafc' }}
                                                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-                                                    formatter={(value: any) => `Rp ${Number(value || 0).toLocaleString()}`}
+                                                    formatter={(value: any) => `Rp ${ Number(value || 0).toLocaleString() } `}
                                                 />
                                                 <Legend iconType="circle" wrapperStyle={{ paddingTop: '30px' }} />
                                                 <Bar dataKey="THT" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={20} />
@@ -530,10 +532,10 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                                                     dataKey="value"
                                                 >
                                                     {pieData.map((entry: any, index: number) => (
-                                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        <Cell key={`cell - ${ index } `} fill={entry.color} />
                                                     ))}
                                                 </Pie>
-                                                <Tooltip formatter={(value: any) => `Rp ${Number(value || 0).toLocaleString()}`} />
+                                                <Tooltip formatter={(value: any) => `Rp ${ Number(value || 0).toLocaleString() } `} />
                                             </PieChart>
                                         </ResponsiveContainer>
                                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">

@@ -6,7 +6,8 @@ import { DataTable } from '../../components/DataTable';
 import type { ColumnDef } from '../../components/DataTable';
 import { ArrowLeft, FileText } from 'lucide-react';
 
-const API = 'http://localhost:3000/api/kepesertaan/iuran';
+const apiUrl = import.meta.env.VITE_API_URL;
+const API = `${apiUrl}/kepesertaan/iuran`;
 
 interface DetailRow {
     id: number;

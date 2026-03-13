@@ -7,12 +7,13 @@ const InfoKepesertaan: React.FC = () => {
     const { user } = useAuth();
     const [peserta, setPeserta] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:3000/api/peserta', {
+                const res = await axios.get(`${apiUrl}/peserta`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setPeserta(res.data[0]);

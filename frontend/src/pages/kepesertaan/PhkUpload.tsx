@@ -6,7 +6,8 @@ import { DataTable } from '../../components/DataTable';
 import type { ColumnDef } from '../../components/DataTable';
 import { Upload, FileSpreadsheet, Eye, Send, CheckCircle2, XCircle } from 'lucide-react';
 
-const API = 'http://localhost:3000/api/kepesertaan/phk';
+const apiUrl = import.meta.env.VITE_API_URL;
+const API = `${apiUrl}/kepesertaan/phk`;
 
 const MONTHS = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
