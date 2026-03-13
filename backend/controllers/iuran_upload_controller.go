@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"encoding/json"
+	"time"
 
 	"briyjkp/database"
 	"briyjkp/models"
@@ -444,7 +445,7 @@ func ProcessIuranApproval(c *fiber.Ctx) error {
 			upload.SignerID = &username
 			database.DB.Save(&upload)
 			
-			// ─── OTOMATISASI PENGECEKAN NEW_MEMBER & MISSING ───
+			// ─── OTOMATISASI PENGECEKAN & DISTRIBUSI ───
 			var details []models.TIuranUploadDetail
 			database.DB.Where("upload_id = ?", upload.ID).Find(&details)
 			
@@ -456,12 +457,14 @@ func ProcessIuranApproval(c *fiber.Ctx) error {
 				existingMap[p.NikBri] = p
 			}
 			
-			detailsMap := make(map[string]models.TIuranUploadDetail)
+			// Untuk cek duplikat di periode yg sama (THT/Prospens bisa di-upload terpisah)
+			// Kita cek apakah NIK ini sudah ada di batch APPROVED lain di bulan/tahun/jenis yg sama
+			// Namun biasanya approval ini per batch.
 			
 			for _, d := range details {
-				detailsMap[d.NikBri] = d
+				// 1. Cek apakah ada di kepesertaan
 				if _, exists := existingMap[d.NikBri]; !exists {
-					// Check if already in discrepancy
+					// Masuk ke PROSES PESERTA BARU
 					var count int64
 					database.DB.Model(&models.TIuranDiscrepancy{}).
 						Where("bulan = ? AND tahun = ? AND nik_bri = ? AND jenis_selisih = 'NEW_MEMBER'", upload.Bulan, upload.Tahun, d.NikBri).
@@ -475,13 +478,47 @@ func ProcessIuranApproval(c *fiber.Ctx) error {
 							Pernr:       d.Pernr,
 							NamaPeserta: d.NamaPeserta,
 							JenisSelisih: "NEW_MEMBER",
+							NominalTHT:     func() float64 { if upload.JenisIuran == "THT" { return d.NominalIuran }; return 0 }(),
+							NominalProspens: func() float64 { if upload.JenisIuran == "PROSPENS" { return d.NominalIuran }; return 0 }(),
 						})
 					}
+					continue
+				}
+
+				// 2. Cek Duplikasi Iuran (Jika NIK ini sudah terekam di batch APPROVED lain di periode & jenis yg sama)
+				var duplicateCount int64
+				database.DB.Table("t_iuran_upload_detail as d").
+					Joins("JOIN t_iuran_upload as u ON d.upload_id = u.id").
+					Where("u.bulan = ? AND u.tahun = ? AND u.jenis_iuran = ? AND d.nik_bri = ? AND u.status_approval = 'APPROVED' AND u.id != ?", 
+						upload.Bulan, upload.Tahun, upload.JenisIuran, d.NikBri, upload.ID).
+					Count(&duplicateCount)
+				
+				if duplicateCount > 0 {
+					// Masuk ke PROSES DUPLICATE
+					database.DB.Create(&models.TIuranDiscrepancy{
+						Bulan:       upload.Bulan,
+						Tahun:       upload.Tahun,
+						NikBri:      d.NikBri,
+						Pernr:       d.Pernr,
+						NamaPeserta: d.NamaPeserta,
+						JenisSelisih: "DUPLICATE_IURAN",
+						NominalTHT:     func() float64 { if upload.JenisIuran == "THT" { return d.NominalIuran }; return 0 }(),
+						NominalProspens: func() float64 { if upload.JenisIuran == "PROSPENS" { return d.NominalIuran }; return 0 }(),
+					})
 				}
 			}
 			
+			// 3. Cek Anggota Non Iuran (Ada di Peserta tapi Tidak ada di Iuran bulan ini)
+			// Ini idealnya dicek saat data bulanan dianggap 'Sip'. Kita jalankan setiap Signer Approve.
+			detailsPNMap := make(map[string]bool)
+			for _, d := range details {
+				detailsPNMap[d.NikBri] = true
+			}
+
 			for _, p := range existingPeserta {
-				if _, exists := detailsMap[p.NikBri]; !exists {
+				if _, found := detailsPNMap[p.NikBri]; !found {
+					// Jika p.NikBri tidak ada di data upload ini, ada kemungkinan dia missing.
+					// Cek apakah sudah ada di discrepancy missing untuk periode ini
 					var count int64
 					database.DB.Model(&models.TIuranDiscrepancy{}).
 						Where("bulan = ? AND tahun = ? AND nik_bri = ? AND jenis_selisih = 'REMOVED_MEMBER'", upload.Bulan, upload.Tahun, p.NikBri).
@@ -500,8 +537,7 @@ func ProcessIuranApproval(c *fiber.Ctx) error {
 				}
 			}
 
-			// Removed direct insert mapping logic since it is done directly in mapping page
-			return c.JSON(fiber.Map{"message": "Upload disetujui dan data iuran tersimpan", "upload": upload})
+			return c.JSON(fiber.Map{"message": "Upload disetujui, sistem telah memvalidasi & mendistribusikan data.", "upload": upload})
 		}
 	}
 
@@ -573,18 +609,18 @@ func GetIuranSettlement(c *fiber.Ctx) error {
 		Status         string  `json:"status"`
 	}
 
-	// We'll show all data grouped by month/year regardless of status for the dashboard
-	// but with a flag or aggregate
+	// We'll show data grouped by month/year where status is APPROVED
 	query := `
 		SELECT 
 			bulan, 
 			tahun, 
-			SUM(CASE WHEN jenis_iuran = 'THT' THEN total_nominal ELSE 0 END) as total_tht,
-			SUM(CASE WHEN jenis_iuran = 'PROSPENS' THEN total_nominal ELSE 0 END) as total_prospens,
-			SUM(CASE WHEN jenis_iuran = 'THT' THEN total_rows ELSE 0 END) as count_tht,
-			SUM(CASE WHEN jenis_iuran = 'PROSPENS' THEN total_rows ELSE 0 END) as count_prospens,
-			MAX(status_approval) as status
+			SUM(CASE WHEN jenis_iuran = 'THT' AND status_approval = 'APPROVED' THEN total_nominal ELSE 0 END) as total_tht,
+			SUM(CASE WHEN jenis_iuran = 'PROSPENS' AND status_approval = 'APPROVED' THEN total_nominal ELSE 0 END) as total_prospens,
+			SUM(CASE WHEN jenis_iuran = 'THT' AND status_approval = 'APPROVED' THEN total_rows ELSE 0 END) as count_tht,
+			SUM(CASE WHEN jenis_iuran = 'PROSPENS' AND status_approval = 'APPROVED' THEN total_rows ELSE 0 END) as count_prospens,
+			'APPROVED' as status
 		FROM t_iuran_upload
+		WHERE status_approval = 'APPROVED'
 		GROUP BY bulan, tahun
 		ORDER BY tahun DESC, bulan DESC
 	`
@@ -615,7 +651,7 @@ func GetParticipantIuranHistory(c *fiber.Ctx) error {
 	err := database.DB.Table("t_iuran_upload_detail as d").
 		Select("u.bulan, u.tahun, u.jenis_iuran, d.nominal_iuran, d.keterangan, u.status_approval, d.created_at").
 		Joins("JOIN t_iuran_upload as u ON d.upload_id = u.id").
-		Where("d.nik_bri = ?", nik).
+		Where("d.nik_bri = ? AND u.status_approval = 'APPROVED'", nik).
 		Order("u.tahun DESC, u.bulan DESC").
 		Scan(&results).Error
 
@@ -639,6 +675,7 @@ func GetIuranReport(c *fiber.Ctx) error {
 	var results []ReportItem
 	err := database.DB.Table("t_iuran_upload").
 		Select("bulan, tahun, jenis_iuran, SUM(total_nominal) as total_nominal, SUM(total_rows) as total_rows").
+		Where("status_approval = 'APPROVED'").
 		Group("bulan, tahun, jenis_iuran").
 		Order("tahun DESC, bulan DESC").
 		Scan(&results).Error
@@ -650,26 +687,54 @@ func GetIuranReport(c *fiber.Ctx) error {
 	return c.JSON(results)
 }
 
-// TruncateIuranData clears all iuran-related data for testing
-func TruncateIuranData(c *fiber.Ctx) error {
+// ResetSystemData clears all transactional and master data for a fresh start
+func ResetSystemData(c *fiber.Ctx) error {
 	tx := database.DB.Begin()
+
+	// Disable foreign key checks for clean truncation
+	tx.Exec("SET FOREIGN_KEY_CHECKS = 0")
+
 	tables := []string{
+		// Iuran & PHK
 		"t_iuran_penampungans",
 		"t_iuran_discrepancies",
 		"t_iuran_upload_details",
 		"t_iuran_upload",
+		"t_phk_upload_details",
+		"t_phk_uploads",
+
+		// Membership
+		"t_lampirans",
+		"t_pendaftaran_manfaats",
+		"t_approval_logs",
+		"t_sk_prospens",
+		"t_pesertas",
+
+		// Investment
+		"t_investment_proposals",
+		"t_investment_transactions",
+		"t_saham_proposals",
+		"t_saham_transactions",
+		"t_saham_corporate_actions",
+
+		// System
+		"t_notifications",
+		"t_audit_trails",
 	}
 
 	for _, table := range tables {
 		if err := tx.Exec(fmt.Sprintf("DELETE FROM %s", table)).Error; err != nil {
 			tx.Rollback()
+			tx.Exec("SET FOREIGN_KEY_CHECKS = 1")
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal mengosongkan tabel " + table})
 		}
 	}
 
+	tx.Exec("SET FOREIGN_KEY_CHECKS = 1")
+
 	if err := tx.Commit().Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal commit pengosongan data"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal commit reset data"})
 	}
 
-	return c.JSON(fiber.Map{"message": "Semua data iuran berhasil dikosongkan (Fresh Slate)"})
+	return c.JSON(fiber.Map{"message": "Seluruh data sistem berhasil direset (Fresh Slate)"})
 }

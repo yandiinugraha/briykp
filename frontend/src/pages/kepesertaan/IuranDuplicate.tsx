@@ -39,7 +39,7 @@ const IuranDuplicate: React.FC = () => {
             const res = await axios.get(`${API}/discrepancy/${bulan}/${tahun}`, { headers });
             const allDiscrepancies: Discrepancy[] = res.data.discrepancies || [];
             setData(allDiscrepancies.filter(d =>
-                d.jenis_selisih !== 'NEW_MEMBER' && d.jenis_selisih !== 'REMOVED_MEMBER'
+                d.jenis_selisih === 'DUPLICATE_IURAN' || d.jenis_selisih === 'THT_PROSPENS_DIFF'
             ));
         } catch (error) {
             console.error('Failed fetching data', error);

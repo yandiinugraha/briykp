@@ -75,7 +75,7 @@ func Setup(app *fiber.App) {
 	kepesertaan.Get("/iuran/settlement", controllers.GetIuranSettlement)
 	kepesertaan.Get("/iuran/history/:nik", controllers.GetParticipantIuranHistory)
 	kepesertaan.Get("/iuran/report", controllers.GetIuranReport)
-	kepesertaan.Delete("/iuran/truncate", controllers.TruncateIuranData)
+	kepesertaan.Delete("/iuran/truncate", controllers.ResetSystemData)
 
 	// PHK Upload
 	kepesertaan.Post("/phk/upload", controllers.UploadPhkFile)
@@ -108,18 +108,31 @@ func Setup(app *fiber.App) {
 	investasi.Post("/proposals/:id/approve", controllers.ApproveInvestmentProposal)
 	investasi.Get("/transactions", controllers.GetInvestmentTransactions)
 	investasi.Post("/transactions/upload", controllers.UploadInvestmentTransaction)
+	investasi.Post("/transactions/:id/settle", controllers.SettleInvestmentTransaction)
+
+	// New Flow Routes
+	investasi.Get("/likuiditas", controllers.GetLiquidityStatus)
+	investasi.Post("/likuiditas", controllers.UpdateLiquidityPosition)
+	investasi.Get("/income", controllers.GetInvestmentIncome)
+	investasi.Post("/income", controllers.CreateInvestmentIncome)
+	investasi.Get("/accounting-summary", controllers.GetAccountingSummary)
 
 	// Saham Specific
 	saham := investasi.Group("/saham")
 	saham.Get("/master", controllers.GetStocks)
 	saham.Post("/master", controllers.CreateStock)
 	saham.Put("/master/:id", controllers.UpdateStock)
+	saham.Delete("/master/:id", controllers.DeleteStock)
 	saham.Get("/proposals", controllers.GetSahamProposals)
+	saham.Post("/proposals", controllers.CreateSahamProposal)
+	saham.Put("/proposals/:id/approve", controllers.ApproveSahamProposal)
 	saham.Post("/proposals/upload", controllers.UploadSahamProposal)
 	saham.Get("/transactions", controllers.GetSahamTransactions)
+	saham.Post("/transactions", controllers.CreateSahamTransaction)
 	saham.Post("/transactions/upload", controllers.UploadSahamTransaction)
 	saham.Post("/action", controllers.CreateCorporateAction)
 	saham.Get("/portfolio", controllers.GetSahamPortfolio)
+	saham.Get("/reports", controllers.GetSahamReports)
 
 	// Master Data (Helper for Front-end)
 	master := protected.Group("/master")

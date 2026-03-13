@@ -332,12 +332,38 @@ type TInvestmentTransaction struct {
 	JenisTransaksi string    `gorm:"type:varchar(20)" json:"jenis_transaksi"` // BUY, SELL
 	KodeEfek       string    `gorm:"type:varchar(50)" json:"kode_efek"`
 	NamaEmiten     string    `gorm:"type:varchar(150)" json:"nama_emiten"`
-	Nominal        float64   `gorm:"type:decimal(18,2)" json:"nominal"`
-	HargaPercent   float64   `gorm:"type:decimal(10,5)" json:"harga_percent"` // Harga dalam % (Clean Price)
+	Nominal        float64   `gorm:"type:decimal(18,2)" json:"nominal"`       // Total Principal
+	JumlahLembar   float64   `gorm:"type:decimal(18,2)" json:"jumlah_lembar"` // Qty
+	HargaTransaksi float64   `gorm:"type:decimal(18,2)" json:"harga_transaksi"`
+	HargaPercent   float64   `gorm:"type:decimal(10,5)" json:"harga_percent"` // Clean Price % (Obligasi)
+	FeeBroker      float64   `gorm:"type:decimal(18,2)" json:"fee_broker"`
 	Yield          float64   `gorm:"type:decimal(10,5)" json:"yield"`
 	TglTransaksi   time.Time `gorm:"type:date" json:"tgl_transaksi"`
 	Sekuritas      string    `gorm:"type:varchar(150)" json:"sekuritas"`
-	Status         string    `gorm:"type:varchar(30);default:'SETTLED'" json:"status"`
+	Status         string    `gorm:"type:varchar(30);default:'SETTLED'" json:"status"` // PENDING_PAYMENT, SETTLED
+}
+
+type TLiquidityPosition struct {
+	ID           uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	TglPosisi    time.Time `gorm:"type:date;unique" json:"tgl_posisi"`
+	SaldoKas     float64   `gorm:"type:decimal(18,2)" json:"saldo_kas"`
+	DanaTerpakai float64   `gorm:"type:decimal(18,2)" json:"dana_terpakai"`
+	DanaIdle     float64   `gorm:"type:decimal(18,2)" json:"dana_idle"`
+	Keterangan   string    `gorm:"type:text" json:"keterangan"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
+
+type TInvestmentIncome struct {
+	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	TransactionID  *uint     `gorm:"index" json:"transaction_id"` // Link to transaction if applicable
+	JenisInvestasi string    `gorm:"type:varchar(50)" json:"jenis_investasi"` // SAHAM, OBLIGASI, DEPOSITO
+	NamaEmiten     string    `gorm:"type:varchar(150)" json:"nama_emiten"`
+	Keterangan     string    `gorm:"type:text" json:"keterangan"` // e.g. "Dividen BBRI", "Kupon FR0080"
+	NominalGross   float64   `gorm:"type:decimal(18,2)" json:"nominal_gross"`
+	PajakPPh       float64   `gorm:"type:decimal(18,2)" json:"pajak_pph"`
+	NominalNet     float64   `gorm:"type:decimal(18,2)" json:"nominal_net"`
+	TanggalCair    time.Time `gorm:"type:date" json:"tanggal_cair"`
+	StatusPotong   string    `gorm:"type:varchar(20);default:'FINAL'" json:"status_potong"`
 	CreatedAt      time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
 
@@ -502,6 +528,8 @@ func (TNotification) TableName() string { return "t_notification" }
 
 func (TInvestmentProposal) TableName() string    { return "t_investment_proposal" }
 func (TInvestmentTransaction) TableName() string { return "t_investment_transaction" }
+func (TLiquidityPosition) TableName() string     { return "t_liquidity_position" }
+func (TInvestmentIncome) TableName() string      { return "t_investment_income" }
 
 func (MSahamMaster) TableName() string          { return "m_saham_master" }
 func (TSahamProposal) TableName() string        { return "t_saham_proposal" }

@@ -142,7 +142,7 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
     };
 
     const handleTruncate = async () => {
-        if (!window.confirm('PERHATIAN: Apakah Bapak yakin ingin MENGHAPUS SEMUA data iuran? Tindakan ini tidak dapat dibatalkan.')) return;
+        if (!window.confirm('PERHATIAN KRITIS: Apakah Bapak yakin ingin me-RESET SELURUH SISTEM? \n\nTindakan ini akan MENGHAPUS SEMUA DATA:\n- Seluruh Data Peserta & Pendaftaran\n- Seluruh Riwayat Iuran & PHK\n- Seluruh Data Investasi (Saham & Obligasi)\n- Notifikasi & Log Audit\n\nTindakan ini tidak dapat dibatalkan.')) return;
 
         setLoading(true);
         try {
@@ -337,9 +337,9 @@ const SettlementIuran: React.FC<SettlementIuranProps> = ({ defaultTab = 'overvie
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleTruncate}
-                        className="flex items-center gap-2 bg-red-50 text-red-600 border border-red-100 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-100 transition-all shadow-sm"
+                        className="flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200 active:scale-95"
                     >
-                        <Trash2 size={16} /> Kosongkan Data
+                        <Trash2 size={16} /> Reset Seluruh Sistem
                     </button>
                     <button className="flex items-center gap-2 bg-white text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all shadow-sm">
                         <Download size={16} /> Export Laporan

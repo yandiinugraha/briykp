@@ -4,7 +4,7 @@ import {
     TrendingUp, Settings, FileText, ClipboardList, Package,
     MapPin, CheckSquare, Activity, UserPlus, Fingerprint, Calendar,
     CreditCard, Coins, RefreshCw, BarChart3, Database,
-    FileSpreadsheet, FileBarChart, Zap, Landmark, Wallet, PieChart
+    FileSpreadsheet, FileBarChart, Zap, Wallet
 } from 'lucide-react';
 
 export interface SubMenuItem {
@@ -140,60 +140,44 @@ export const MODULES: ErpModule[] = [
     {
         id: 'investasi',
         name: 'Investasi',
-        description: 'Obligasi, Saham & Reksadana',
+        description: 'Likuiditas, Investasi & Settlement',
         icon: TrendingUp,
         color: 'bg-cyan-600',
         basePath: '/investasi',
         menus: [
             {
-                groupLabel: 'INVESTASI',
+                groupLabel: 'INVESTASI FLOW',
                 groupIcon: <TrendingUp size={16} />,
                 items: [
                     {
-                        label: 'Obligasi',
-                        icon: <Landmark size={18} />,
+                        label: 'Likuiditas',
+                        icon: <Activity size={18} />,
+                        path: '/investasi/likuiditas',
+                    },
+                    {
+                        label: 'Transaksi Investasi',
+                        icon: <TrendingUp size={18} />,
                         children: [
-                            { label: 'Proposal Investasi', path: '/investasi/obligasi/proposal' },
-                            { label: 'Transaksi Beli/Jual', path: '/investasi/obligasi/transaksi' },
-                            { label: 'Settlement', path: '/investasi/obligasi/settlement' },
-                            { label: 'Proyeksi Likuiditas', path: '/investasi/obligasi/likuiditas' },
-                            { label: 'Proses Akuntansi', path: '/investasi/obligasi/akuntansi' },
-                            { label: 'Accrual & Amortisasi', path: '/investasi/obligasi/accrual' },
-                            { label: 'Penerimaan Kupon', path: '/investasi/obligasi/kupon' },
-                            { label: 'Valuasi Mark-to-Market', path: '/investasi/obligasi/valuasi' },
-                            { label: 'Jatuh Tempo/Pelunasan', path: '/investasi/obligasi/jatuh-tempo' },
-                            { label: 'Laporan & Dashboard', path: '/investasi/obligasi/laporan' },
+                            { label: 'Saham', path: '/investasi/transaksi/saham' },
+                            { label: 'Obligasi', path: '/investasi/transaksi/obligasi' },
+                            { label: 'Reksadana', path: '/investasi/transaksi/reksadana' },
+                            { label: 'Deposito', path: '/investasi/transaksi/deposito' },
                         ],
                     },
                     {
-                        label: 'Saham',
-                        icon: <BarChart3 size={18} />,
+                        label: 'Settlement',
+                        icon: <RefreshCw size={18} />,
+                        path: '/investasi/settlement',
+                    },
+                    {
+                        label: 'Akuntansi & Pajak',
+                        icon: <Calculator size={18} />,
                         children: [
-                            { label: 'Proposal Investasi', path: '/investasi/saham/proposal' },
-                            { label: 'Transaksi Beli/Jual', path: '/investasi/saham/transaksi' },
-                            { label: 'Settlement', path: '/investasi/saham/settlement' },
-                            { label: 'Proses Akuntansi', path: '/investasi/saham/akuntansi' },
-                            { label: 'Proyeksi Likuiditas', path: '/investasi/saham/likuiditas' },
-                            { label: 'Valuasi Mark-to-Market', path: '/investasi/saham/valuasi' },
-                            { label: 'Proses Akuntansi (Lanjutan)', path: '/investasi/saham/akuntansi-lanjutan' },
-                            { label: 'Corporate Action', path: '/investasi/saham/corporate-action' },
-                            { label: 'Laporan & Dashboard', path: '/investasi/saham/laporan' },
+                            { label: 'Pendapatan Investasi', path: '/investasi/akuntansi/pendapatan' },
+                            { label: 'Pelaporan Pajak PPh', path: '/investasi/akuntansi/pajak' },
+                            { label: 'Jurnal Otomatis', path: '/investasi/akuntansi/jurnal' },
                         ],
                     },
-                    {
-                        label: 'Reksadana',
-                        icon: <PieChart size={18} />,
-                        children: [
-                            { label: 'Dashboard', path: '/investasi/reksadana' }
-                        ]
-                    },
-                    {
-                        label: 'Liquiditas',
-                        icon: <Coins size={18} />,
-                        children: [
-                            { label: 'Dashboard', path: '/investasi/liquiditas' }
-                        ]
-                    }
                 ],
             }
         ]

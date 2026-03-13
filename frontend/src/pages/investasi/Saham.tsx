@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Upload, FileText, ArrowRight, LayoutDashboard,
-    Database, Coins, RefreshCw, BarChart3, TrendingUp,
-    Plus, Activity, PieChart as PieChartIcon,
-    ArrowUpRight, ArrowDownRight, Briefcase, Globe,
-    Download
+    Activity, TrendingUp, PieChart as PieChartIcon,
+    ArrowUpRight, ArrowDownRight, Plus,
+    Briefcase, FileText, BarChart3, Upload,
+    LayoutDashboard, Database, RefreshCw, Coins
 } from 'lucide-react';
-import { DataTable, type ColumnDef } from '../../components/DataTable';
+import { DataTable } from '../../components/DataTable';
 import { useAuth } from '../../context/AuthContext';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -17,6 +16,15 @@ import {
 
 // --- STYLES & CONSTANTS ---
 const COLORS = ['#3b82f6', '#f97316', '#10b981', '#8b5cf6', '#ec4899', '#f59e0b'];
+
+const formatShortAmount = (amount: number) => {
+    const absAmount = Math.abs(amount);
+    const sign = amount < 0 ? '-' : '';
+    if (absAmount >= 1e12) return sign + (absAmount / 1e12).toFixed(1) + 'T';
+    if (absAmount >= 1e9) return sign + (absAmount / 1e9).toFixed(1) + 'M';
+    if (absAmount >= 1e6) return sign + (absAmount / 1e6).toFixed(1) + 'jt';
+    return sign + absAmount.toLocaleString('id-ID');
+};
 
 interface StatCardProps {
     title: string;
@@ -59,36 +67,44 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend, trendUp,
 // --- MAIN PAGE COMPONENT ---
 
 interface SahamProps {
-    defaultTab?: 'dashboard' | 'master' | 'proposal' | 'transaksi' | 'corporate-action';
+    defaultTab?: 'dashboard' | 'master' | 'proposal' | 'transaksi' | 'reports' | 'corporate-action';
 }
 
 const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
     const { token, user } = useAuth();
     const role = user?.role;
-    const [activeTab, setActiveTab] = useState<'dashboard' | 'master' | 'proposal' | 'transaksi' | 'corporate-action'>(defaultTab);
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'master' | 'proposal' | 'transaksi' | 'reports' | 'corporate-action'>(defaultTab);
     const [loading, setLoading] = useState(false);
-    const [uploading, setUploading] = useState(false);
-    const [showUploadModal, setShowUploadModal] = useState(false);
-    const [uploadType, setUploadType] = useState<'proposal' | 'transaction'>('proposal');
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    // UI States
+
+    const [showFormModal, setShowFormModal] = useState(false);
+    const [formType, setFormType] = useState<'master' | 'proposal' | 'transaction' | 'action'>('master');
+    const [formData, setFormData] = useState<any>({});
 
     // Data States
     const [stocks, setStocks] = useState<any[]>([]);
     const [proposals, setProposals] = useState<any[]>([]);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [portfolio, setPortfolio] = useState<any[]>([]);
+    const [reportData, setReportData] = useState<any[]>([]);
+    const [reportPeriod, setReportPeriod] = useState<'daily' | 'monthly' | 'yearly'>('daily');
 
     useEffect(() => {
         fetchAllData();
     }, []);
+
+    useEffect(() => {
+        if (activeTab === 'reports') fetchReports();
+    }, [activeTab, reportPeriod]);
 
     const fetchAllData = async () => {
         setLoading(true);
         try {
             const [stocksRes, proposalsRes, txRes, portfolioRes] = await Promise.all([
                 axios.get('http://localhost:3000/api/investasi/saham/master', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/saham/proposals', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:3000/api/investasi/saham/transactions', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:3000/api/investasi/proposals', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:3000/api/investasi/transactions', { headers: { Authorization: `Bearer ${token}` } }),
                 axios.get('http://localhost:3000/api/investasi/saham/portfolio', { headers: { Authorization: `Bearer ${token}` } })
             ]);
 
@@ -103,35 +119,114 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
         }
     };
 
-    const handleFileUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!selectedFile) return;
+    const fetchReports = async () => {
+        try {
+            const res = await axios.get(`http://localhost:3000/api/investasi/saham/reports?period=${reportPeriod}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setReportData(res.data || []);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('file', selectedFile);
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            let endpoint = '';
+            let method = 'post';
+
+            switch (formType) {
+                case 'master': endpoint = 'http://localhost:3000/api/investasi/saham/master'; break;
+                case 'proposal': endpoint = 'http://localhost:3000/api/investasi/saham/proposals'; break;
+                case 'transaction': endpoint = 'http://localhost:3000/api/investasi/saham/transactions'; break;
+                case 'action': endpoint = 'http://localhost:3000/api/investasi/saham/action'; break;
+            }
+
+            if (formData.id && formType === 'master') {
+                endpoint += `/${formData.id}`;
+                method = 'put';
+            }
+
+            await axios({
+                method,
+                url: endpoint,
+                data: formData,
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            alert('Data berhasil disimpan');
+            setShowFormModal(false);
+            setFormData({});
+            fetchAllData();
+        } catch (error) {
+            console.error('Form error:', error);
+            alert('Terjadi kesalahan saat menyimpan data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (type: string, id: number) => {
+        if (!window.confirm('Hapus data ini?')) return;
+        try {
+            let endpoint = '';
+            if (type === 'master') endpoint = `http://localhost:3000/api/investasi/saham/master/${id}`;
+            if (type === 'proposal') endpoint = `http://localhost:3000/api/investasi/proposals/${id}`;
+
+            await axios.delete(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            alert('Berhasil dihapus');
+            fetchAllData();
+        } catch (e) {
+            alert('Gagal menghapus');
+        }
+    };
+
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files?.[0]) return;
+        setLoading(true);
+        const file = e.target.files[0];
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
 
         try {
-            const endpoint = uploadType === 'proposal'
-                ? 'http://localhost:3000/api/investasi/saham/proposals/upload'
-                : 'http://localhost:3000/api/investasi/saham/transactions/upload';
-
-            await axios.post(endpoint, formData, {
+            await axios.post('http://localhost:3000/api/investasi/proposals/upload', formDataUpload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            alert('Upload berhasil!');
-            setShowUploadModal(false);
-            setSelectedFile(null);
+            alert('Proposal berhasil diupload');
             fetchAllData();
         } catch (error) {
             console.error('Upload error:', error);
-            alert('Gagal mengunggah file.');
+            alert('Gagal mengupload proposal');
         } finally {
-            setUploading(false);
+            setLoading(false);
         }
+    };
+
+    const handleApprove = async (id: number, action: string) => {
+        try {
+            await axios.post(`http://localhost:3000/api/investasi/proposals/${id}/approve?action=${action}`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert(`Proposal ${action === 'APPROVE' ? 'disetujui' : 'ditolak'}`);
+            fetchAllData();
+        } catch (e) {
+            alert('Gagal memproses approval');
+        }
+    };
+
+    const openForm = (type: any, data: any = {}) => {
+        setFormType(type);
+        setFormData({
+            ...data,
+            tgl_transaksi: data.tgl_transaksi || new Date().toISOString()
+        });
+        setShowFormModal(true);
     };
 
     // --- RENDER HELPERS ---
@@ -156,178 +251,109 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
             <div className="space-y-8 animate-in fade-in duration-500">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
-                        title="Total Market Value"
-                        value={`Rp ${totalMarketValue.toLocaleString()}`}
-                        icon={<Briefcase size={24} />}
-                        trend="+12.5%"
-                        trendUp={true}
+                        title="Market Value"
+                        value={`Rp ${formatShortAmount(totalMarketValue)}`}
+                        icon={<TrendingUp size={24} />}
                         color="blue"
                     />
                     <StatCard
-                        title="Floating Profit/Loss"
-                        value={`Rp ${totalProfit.toLocaleString()}`}
-                        icon={<TrendingUp size={24} />}
-                        trend={totalProfit >= 0 ? "+ROI" : "-ROI"}
-                        trendUp={totalProfit >= 0}
-                        color={totalProfit >= 0 ? "green" : "rose"}
-                    />
-                    <StatCard
-                        title="Average ROI"
-                        value={`${avgROI.toFixed(2)}%`}
-                        icon={<PieChartIcon size={24} />}
-                        color="indigo"
-                    />
-                    <StatCard
-                        title="Active Stock Items"
-                        value={portfolio.length.toString()}
+                        title="Floating P/L"
+                        value={`Rp ${formatShortAmount(totalProfit)}`}
                         icon={<Activity size={24} />}
+                        trend={`${avgROI.toFixed(1)}%`}
+                        trendUp={avgROI >= 0}
+                        color={totalProfit >= 0 ? "indigo" : "rose"}
+                    />
+                    <StatCard
+                        title="Nominal Investasi"
+                        value={`Rp ${formatShortAmount(totalMarketValue - totalProfit)}`}
+                        icon={<Coins size={24} />}
+                        color="green"
+                    />
+                    <StatCard
+                        title="Active Items"
+                        value={portfolio.length.toString()}
+                        icon={<Briefcase size={24} />}
                         color="orange"
                     />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm shadow-gray-200/50">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="font-black text-gray-900 flex items-center gap-3">
-                                <PieChartIcon size={20} className="text-orange-500" /> Komposisi Portofolio
-                            </h3>
-                        </div>
+                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                        <h3 className="font-black text-gray-900 flex items-center gap-3 mb-8">
+                            <PieChartIcon size={20} className="text-orange-500" /> Komposisi Portofolio
+                        </h3>
                         <div className="h-[350px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
-                                    <Pie
-                                        data={pieData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={80}
-                                        outerRadius={120}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {pieData.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
+                                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={80} outerRadius={120} paddingAngle={5} dataKey="value">
+                                        {pieData.map((_, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                                     </Pie>
-                                    <Tooltip
-                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
-                                        formatter={(val: any) => `Rp ${val.toLocaleString()}`}
-                                    />
-                                    <Legend verticalAlign="middle" align="right" layout="vertical" />
+                                    <Tooltip formatter={(val: any) => `Rp ${val.toLocaleString()}`} />
+                                    <Legend />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
 
-                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm shadow-gray-200/50">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="font-black text-gray-900 flex items-center gap-3">
-                                <BarChart3 size={20} className="text-blue-500" /> P&L Per-Instrumen
-                            </h3>
-                        </div>
+                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                        <h3 className="font-black text-gray-900 flex items-center gap-3 mb-8">
+                            <BarChart3 size={20} className="text-blue-500" /> Profil P&L Per-Saham
+                        </h3>
                         <div className="h-[350px]">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={barData}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} tickFormatter={(val) => `Rp${(val / 1000000).toFixed(0)}Jt`} />
-                                    <Tooltip cursor={{ fill: '#f8fbfc' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
-                                    <Bar dataKey="Cost" fill="#3b82f6" stackId="a" radius={[0, 0, 0, 0]} />
-                                    <Bar dataKey="Profit" fill="#10b981" stackId="a" radius={[4, 4, 0, 0]} />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                                    <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `Rp${(val / 1000000).toFixed(0)}jt`} />
+                                    <Tooltip formatter={(val: any) => `Rp ${val.toLocaleString()}`} />
+                                    <Bar dataKey="Cost" fill="#3b82f6" stackId="a" />
+                                    <Bar dataKey="Profit" fill="#10b981" stackId="a" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
                 </div>
-
-                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm shadow-gray-200/50 overflow-hidden">
-                    <div className="p-8 border-b border-gray-50 bg-gray-50/30 flex justify-between items-center">
-                        <h3 className="font-black text-gray-900 flex items-center gap-3">
-                            <Globe size={20} className="text-teal-500" /> Posisi Portofolio Detail
-                        </h3>
-                        <button className="flex items-center gap-2 text-bri-blue font-black text-xs uppercase tracking-widest hover:opacity-70 transition-opacity">
-                            <Download size={14} /> Download Report
-                        </button>
-                    </div>
-                    <DataTable
-                        data={portfolio}
-                        columns={[
-                            { header: 'Kode', accessor: 'kode_saham', id: 'kode' },
-                            { header: 'Nama Emiten', accessor: 'nama_emiten', id: 'emiten' },
-                            { header: 'Lembar', accessor: (row) => row.total_lembar.toLocaleString(), id: 'lembar' },
-                            { header: 'HPP Avg', accessor: (row) => `Rp ${row.avg_price.toLocaleString()}`, id: 'hpp' },
-                            { header: 'Last Price', accessor: (row) => `Rp ${row.last_price.toLocaleString()}`, id: 'last' },
-                            {
-                                header: 'Market Value',
-                                accessor: (row) => <span className="font-bold text-blue-600">Rp {row.market_value.toLocaleString()}</span>,
-                                id: 'market'
-                            },
-                            {
-                                header: 'Profit/Loss',
-                                accessor: (row) => (
-                                    <span className={`font-bold ${row.floating_profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        Rp {row.floating_profit.toLocaleString()}
-                                    </span>
-                                ),
-                                id: 'profit'
-                            },
-                        ]}
-                        loading={loading}
-                    />
-                </div>
             </div>
         );
     };
 
-    const masterColumns: ColumnDef<any>[] = [
-        { header: 'Kode', accessor: 'kode_saham', id: 'kode' },
-        { header: 'Emiten', accessor: 'nama_emiten', id: 'emiten' },
-        { header: 'Sektor', accessor: 'sektor', id: 'sektor' },
-        {
-            header: 'Universe',
-            accessor: (row) => (
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${row.is_universe ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                    {row.is_universe ? 'UNIVERSE' : 'NON-UNIVERSE'}
-                </span>
-            ),
-            id: 'universe'
-        },
-        { header: 'Last Price', accessor: (row) => `Rp ${row.last_price.toLocaleString()}`, id: 'price' },
-        {
-            header: 'Status',
-            accessor: (row) => (
-                <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black tracking-widest">
-                    {row.status_approval}
-                </span>
-            ),
-            id: 'status'
-        }
-    ];
-
-    const proposalColumns: ColumnDef<any>[] = [
-        { header: 'No. Proposal', accessor: 'proposal_no', id: 'no' },
-        { header: 'Tgl', accessor: (row) => new Date(row.tgl_proposal).toLocaleDateString('id-ID'), id: 'tgl' },
-        { header: 'Saham', accessor: 'kode_saham', id: 'saham' },
-        {
-            header: 'Tipe',
-            accessor: (row) => (
-                <span className={`font-bold px-2 py-0.5 rounded ${row.tipe_transaksi === 'BELI' ? 'text-blue-600 bg-blue-50' : 'text-orange-600 bg-orange-50'}`}>
-                    {row.tipe_transaksi}
-                </span>
-            ),
-            id: 'tipe'
-        },
-        { header: 'Target Harga', accessor: (row) => `Rp ${(row.range_harga_beli || row.range_harga_jual || 0).toLocaleString()}`, id: 'target' },
-        { header: 'Lembar', accessor: (row) => row.jumlah_lembar?.toLocaleString(), id: 'lembar' },
-        {
-            header: 'Status',
-            accessor: (row) => (
-                <span className={`px-2 py-1 rounded-full text-[10px] font-black ${row.status_approval === 'APPROVED' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
-                    {row.status_approval}
-                </span>
-            ),
-            id: 'status'
-        }
-    ];
+    const renderReports = () => (
+        <div className="space-y-6">
+            <div className="flex justify-end gap-2 mb-4">
+                {(['daily', 'monthly', 'yearly'] as const).map(p => (
+                    <button
+                        key={p}
+                        onClick={() => setReportPeriod(p)}
+                        className={`px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${reportPeriod === p ? 'bg-bri-blue text-white shadow-lg' : 'bg-white text-gray-500 hover:bg-gray-100'}`}
+                    >
+                        {p}
+                    </button>
+                ))}
+            </div>
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
+                <DataTable
+                    data={reportData}
+                    columns={[
+                        { header: 'Periode', accessor: 'label', id: 'label' },
+                        { header: 'Frekuensi Beli', accessor: 'count_beli', id: 'cb' },
+                        { header: 'Total Beli', accessor: (row) => `Rp ${row.total_beli.toLocaleString()}`, id: 'tb' },
+                        { header: 'Frekuensi Jual', accessor: 'count_jual', id: 'cj' },
+                        { header: 'Total Jual', accessor: (row) => `Rp ${row.total_jual.toLocaleString()}`, id: 'tj' },
+                        {
+                            header: 'Net Flow',
+                            accessor: (row) => (
+                                <span className={`font-bold ${(row.total_jual - row.total_beli) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    Rp {(row.total_jual - row.total_beli).toLocaleString()}
+                                </span>
+                            ),
+                            id: 'net'
+                        },
+                    ]}
+                />
+            </div>
+        </div>
+    );
 
     return (
         <div className="p-8 max-w-[1600px] mx-auto min-h-screen bg-gray-50/30">
@@ -342,26 +368,34 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
                     </div>
                     <p className="text-gray-500 font-medium max-w-2xl">
                         Sistem manajemen portofolio saham terintegrasi. Kelola master data,
-                        pengajuan proposal, hingga pencatatan transaksi dan aksi korporasi secara real-time.
+                        pengajuan proposal, transaksi, hingga laporan performa.
                     </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                    {role === 'Staff' && (
+                    {['Staff', 'Super Admin'].includes(role || '') && (
                         <>
                             <button
-                                onClick={() => { setUploadType('proposal'); setShowUploadModal(true); }}
-                                className="flex items-center gap-2 bg-bri-blue text-white px-6 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-bri-blue/20 hover:scale-[1.02] active:scale-95 transition-all"
+                                onClick={() => openForm('master')}
+                                className="flex items-center gap-2 bg-white border-2 border-bri-blue text-bri-blue px-6 py-3.5 rounded-2xl font-black text-sm shadow-sm hover:bg-blue-50 transition-all"
                             >
-                                <Plus size={18} />
-                                Buat Proposal
+                                <Plus size={18} /> Master Baru
                             </button>
                             <button
-                                onClick={() => { setUploadType('transaction'); setShowUploadModal(true); }}
-                                className="flex items-center gap-2 bg-white border-2 border-bri-blue text-bri-blue px-6 py-3.5 rounded-2xl font-black text-sm hover:bg-bri-blue/5 hover:scale-[1.02] active:scale-95 transition-all"
+                                onClick={() => openForm('proposal')}
+                                className="flex items-center gap-2 bg-bri-blue text-white px-6 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-bri-blue/20 hover:scale-[1.02] active:scale-95 transition-all"
                             >
-                                <Upload size={18} />
-                                Catat Transaksi
+                                <FileText size={18} /> Entry Proposal
+                            </button>
+                            <label className="flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-600 px-6 py-3.5 rounded-2xl font-black text-sm shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
+                                <Upload size={18} /> Upload Proposal (CSV)
+                                <input type="file" accept=".csv" className="hidden" onChange={handleUpload} />
+                            </label>
+                            <button
+                                onClick={() => openForm('transaction')}
+                                className="flex items-center gap-2 bg-bri-orange text-white px-6 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-95 transition-all"
+                            >
+                                <Plus size={18} /> Entry Transaksi
                             </button>
                         </>
                     )}
@@ -369,37 +403,13 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex gap-2 p-1.5 bg-gray-100 rounded-2xl w-fit mb-8 sticky top-4 z-40 shadow-sm border border-gray-200/50 backdrop-blur-md bg-white/70">
-                <button
-                    onClick={() => setActiveTab('dashboard')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${activeTab === 'dashboard' ? 'bg-white text-bri-blue shadow-md border border-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                >
-                    <LayoutDashboard size={16} /> Dashboard
-                </button>
-                <button
-                    onClick={() => setActiveTab('master')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${activeTab === 'master' ? 'bg-white text-bri-blue shadow-md border border-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                >
-                    <Database size={16} /> Master Saham
-                </button>
-                <button
-                    onClick={() => setActiveTab('proposal')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${activeTab === 'proposal' ? 'bg-white text-bri-blue shadow-md border border-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                >
-                    <FileText size={16} /> Proposal Plan
-                </button>
-                <button
-                    onClick={() => setActiveTab('transaksi')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${activeTab === 'transaksi' ? 'bg-white text-bri-blue shadow-md border border-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                >
-                    <RefreshCw size={16} /> Transaksi
-                </button>
-                <button
-                    onClick={() => setActiveTab('corporate-action')}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${activeTab === 'corporate-action' ? 'bg-white text-bri-blue shadow-md border border-gray-100' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                >
-                    <Coins size={16} /> Corporate Action
-                </button>
+            <div className="flex gap-2 p-1.5 bg-gray-100 rounded-2xl w-fit mb-8 sticky top-4 z-40 shadow-sm border border-gray-200/50 backdrop-blur-md bg-white/70 overflow-x-auto max-w-full">
+                <button onClick={() => setActiveTab('dashboard')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'dashboard' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><LayoutDashboard size={16} /> Dashboard</button>
+                <button onClick={() => setActiveTab('master')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'master' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><Database size={16} /> Master Saham</button>
+                <button onClick={() => setActiveTab('proposal')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'proposal' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><FileText size={16} /> Proposal</button>
+                <button onClick={() => setActiveTab('transaksi')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'transaksi' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><RefreshCw size={16} /> Transaksi</button>
+                <button onClick={() => setActiveTab('reports')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'reports' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><BarChart3 size={16} /> Laporan</button>
+                <button onClick={() => setActiveTab('corporate-action')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${activeTab === 'corporate-action' ? 'bg-white text-bri-blue shadow-md' : 'text-gray-500 hover:text-gray-900'}`}><Coins size={16} /> Action</button>
             </div>
 
             {/* Content Area */}
@@ -407,117 +417,251 @@ const Saham: React.FC<SahamProps> = ({ defaultTab = 'dashboard' }) => {
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-40">
                         <div className="w-12 h-12 border-4 border-bri-blue border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p className="text-gray-500 font-bold tracking-widest text-xs uppercase">Menyiapkan Data Investasi...</p>
+                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Memproses Data...</p>
                     </div>
                 ) : (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {activeTab === 'dashboard' && renderDashboard()}
                         {activeTab === 'master' && (
                             <div className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
-                                <DataTable data={stocks} columns={masterColumns} loading={loading} searchable />
+                                <DataTable data={stocks} columns={[
+                                    { header: 'Kode', accessor: 'kode_saham', id: 'k' },
+                                    { header: 'Emiten', accessor: 'nama_emiten', id: 'e' },
+                                    { header: 'Sektor', accessor: 'sektor', id: 's' },
+                                    { header: 'Last Price', accessor: (row) => `Rp ${row.last_price.toLocaleString()}`, id: 'p' },
+                                    { header: 'Universe', accessor: (row) => row.is_universe ? 'YES' : 'NO', id: 'u' },
+                                    {
+                                        header: 'Aksi', accessor: (row) => (
+                                            <div className="flex gap-2">
+                                                <button onClick={() => openForm('master', row)} className="text-bri-blue font-bold">Edit</button>
+                                                <button onClick={() => handleDelete('master', row.id)} className="text-red-500 font-bold">Del</button>
+                                            </div>
+                                        ), id: 'a'
+                                    }
+                                ]} searchable />
                             </div>
                         )}
                         {activeTab === 'proposal' && (
                             <div className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
-                                <DataTable data={proposals} columns={proposalColumns} loading={loading} searchable />
+                                <DataTable data={proposals} columns={[
+                                    { header: 'No. Proposal', accessor: (row) => <span className="text-[10px] font-mono font-bold text-gray-400">#{row.proposal_no.split('-').pop()}</span>, id: 'n' },
+                                    { header: 'Tgl', accessor: (row) => new Date(row.created_at).toLocaleDateString(), id: 't' },
+                                    { header: 'Tipe', accessor: 'jenis_investasi', id: 'jt' },
+                                    { header: 'Efek', accessor: 'kode_efek', id: 's' },
+                                    { header: 'Aksi', accessor: (row) => <span className={`font-black ${row.tipe_transaksi === 'BELI' ? 'text-green-600' : 'text-rose-600'}`}>{row.tipe_transaksi}</span>, id: 'ty' },
+                                    { header: 'Nominal Usulan', accessor: (row) => `Rp ${row.nominal_usulan?.toLocaleString()}`, id: 'p' },
+                                    { header: 'Target', accessor: (row) => row.range_harga || row.range_yield || '-', id: 'l' },
+                                    {
+                                        header: 'Status', accessor: (row) => (
+                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black ${row.status_approval === 'APPROVED' ? 'bg-green-100 text-green-700' : row.status_approval === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                {row.status_approval}
+                                            </span>
+                                        ), id: 'st'
+                                    },
+                                    {
+                                        header: 'Approval', accessor: (row) => (
+                                            <div className="flex gap-2">
+                                                {row.status_approval === 'PENDING' && (['Checker', 'Admin', 'Super Admin'].includes(role || '')) && (
+                                                    <div className="flex gap-1">
+                                                        <button onClick={() => handleApprove(row.id, 'APPROVE')} className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-tight">Checker OK</button>
+                                                        <button onClick={() => handleApprove(row.id, 'REJECT')} className="bg-red-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-tight">Reject</button>
+                                                    </div>
+                                                )}
+                                                {row.status_approval === 'PENDING_SIGNER' && (['Signer', 'Super Admin'].includes(role || '')) && (
+                                                    <div className="flex gap-1">
+                                                        <button onClick={() => handleApprove(row.id, 'APPROVE')} className="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-tight">Signer OK</button>
+                                                        <button onClick={() => handleApprove(row.id, 'REJECT')} className="bg-red-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-tight">Reject</button>
+                                                    </div>
+                                                )}
+                                                {row.status_approval === 'APPROVED' && (
+                                                    <button
+                                                        onClick={() => openForm('transaction', {
+                                                            proposal_id: row.id,
+                                                            kode_efek: row.kode_efek,
+                                                            nama_emiten: row.nama_emiten,
+                                                            jenis_transaksi: row.tipe_transaksi === 'BELI' ? 'BUY' : 'SELL',
+                                                            nominal: row.nominal_usulan
+                                                        })}
+                                                        className="bg-orange-500 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
+                                                    >
+                                                        Eksekusi <ArrowUpRight size={10} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ), id: 'ap'
+                                    }
+                                ]} searchable />
                             </div>
                         )}
                         {activeTab === 'transaksi' && (
                             <div className="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
-                                <DataTable
-                                    data={transactions}
-                                    columns={[
-                                        { header: 'TX No.', accessor: 'transaction_no', id: 'no' },
-                                        { header: 'Tgl', accessor: (row) => new Date(row.tgl_transaksi).toLocaleDateString('id-ID'), id: 'tgl' },
-                                        { header: 'Emiten', accessor: 'kode_saham', id: 'saham' },
-                                        { header: 'Tipe', accessor: 'tipe_transaksi', id: 'tipe' },
-                                        { header: 'Harga', accessor: (row) => `Rp ${row.harga_transaksi.toLocaleString()}`, id: 'harga' },
-                                        { header: 'Lembar', accessor: (row) => row.jumlah_lembar.toLocaleString(), id: 'lembar' },
-                                        { header: 'Total', accessor: (row) => `Rp ${row.total_nominal.toLocaleString()}`, id: 'total' },
-                                        { header: 'Sekuritas', accessor: 'sekuritas', id: 'sekuritas' },
-                                    ]}
-                                    loading={loading}
-                                    searchable
-                                />
+                                <DataTable data={transactions} columns={[
+                                    { header: 'TX No.', accessor: 'transaction_no', id: 'n' },
+                                    { header: 'Tgl', accessor: (row) => new Date(row.tgl_transaksi).toLocaleDateString(), id: 't' },
+                                    { header: 'Efek', accessor: (row) => row.kode_efek || row.kode_saham, id: 's' },
+                                    { header: 'Tipe', accessor: (row) => row.jenis_transaksi || row.tipe_transaksi, id: 'ty' },
+                                    { header: 'Harga/Yield', accessor: (row) => row.harga_transaksi ? `Rp ${row.harga_transaksi.toLocaleString()}` : row.yield ? `${row.yield}%` : row.harga_percent ? `${row.harga_percent}%` : '-', id: 'p' },
+                                    { header: 'Nominal/Qty', accessor: (row) => (row.nominal || row.jumlah_lembar)?.toLocaleString() || '-', id: 'l' },
+                                    { header: 'Sekuritas', accessor: 'sekuritas', id: 'sk' }
+                                ]} searchable />
                             </div>
                         )}
+                        {activeTab === 'reports' && renderReports()}
                         {activeTab === 'corporate-action' && (
-                            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-gray-200 text-center">
-                                <Coins size={64} className="text-gray-300 mb-6" />
-                                <h3 className="text-xl font-black text-gray-800 mb-2">Input Aksi Korporasi</h3>
-                                <p className="text-gray-500 max-w-md mx-auto mb-8 font-medium">
-                                    Catat pembagian dividen, stock split, atau right issue untuk mengupdate posisi portofolio secara otomatis.
-                                </p>
-                                <button className="bg-bri-blue text-white px-8 py-3 rounded-2xl font-black text-sm hover:scale-105 transition-all shadow-xl shadow-bri-blue/20">
-                                    Mulai Input Manual
-                                </button>
+                            <div className="bg-white p-20 rounded-3xl border border-dashed border-gray-200 text-center">
+                                <Coins size={64} className="text-gray-300 mx-auto mb-6" />
+                                <h3 className="text-xl font-black text-gray-800 mb-2">Pencatatan Aksi Korporasi</h3>
+                                <p className="text-gray-500 mb-8 max-w-sm mx-auto">Input Dividen, Stock Split, atau Right Issue Saham.</p>
+                                <button onClick={() => openForm('action')} className="bg-bri-blue text-white px-8 py-3 rounded-2xl font-black">Input Sekarang</button>
                             </div>
                         )}
                     </div>
                 )}
             </div>
 
-            {/* Upload Modal */}
+            {/* Form Modal */}
             <AnimatePresence>
-                {showUploadModal && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="bg-white rounded-[40px] shadow-2xl w-full max-w-xl overflow-hidden border border-white/20"
-                        >
-                            <div className="p-10 text-center">
-                                <div className="w-20 h-20 bg-blue-50 text-bri-blue rounded-3xl flex items-center justify-center mx-auto mb-6 transform -rotate-6">
-                                    <Database size={40} />
-                                </div>
-                                <h3 className="text-3xl font-black text-gray-900 mb-3">
-                                    Upload {uploadType === 'proposal' ? 'Proposal CSV' : 'Transaksi CSV'}
-                                </h3>
-                                <p className="text-gray-500 font-medium mb-8">
-                                    {uploadType === 'proposal'
-                                        ? 'Format CSV: Tgl, KodeSaham, Tipe(BELI/JUAL), DKP, Book, Harga, Lembar'
-                                        : 'Format CSV: ProposalNo, Tgl, KodeSaham, Tipe, Lembar, Harga, Fee, Sekuritas, DKP, Book'}
-                                </p>
-
-                                <form onSubmit={handleFileUpload} className="space-y-8">
-                                    <div className="border-3 border-dashed border-gray-100 rounded-[32px] p-12 text-center hover:border-bri-blue/50 hover:bg-blue-50/30 transition-all relative group bg-gray-50/50">
-                                        <input
-                                            type="file"
-                                            accept=".csv"
-                                            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        />
-                                        <div className="flex flex-col items-center gap-4">
-                                            <div className="w-14 h-14 bg-white text-bri-blue rounded-2xl shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform ring-4 ring-blue-50">
-                                                <Upload size={24} />
-                                            </div>
-                                            <div className="text-base font-black text-gray-700">
-                                                {selectedFile ? selectedFile.name : 'Pilih file data atau seret ke sini'}
-                                            </div>
-                                            <div className="text-xs text-gray-400 font-bold uppercase tracking-widest">Maksimal 50MB (CSV Only)</div>
+                {showFormModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-[32px] w-full max-w-2xl p-10 overflow-hidden shadow-2xl">
+                            <h2 className="text-2xl font-black mb-8 capitalize px-2">Entry Data {formType}</h2>
+                            <form onSubmit={handleFormSubmit} className="grid grid-cols-2 gap-6 p-2 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                {formType === 'master' && (
+                                    <>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Kode Saham</label>
+                                            <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.kode_saham || ''} onChange={e => setFormData({ ...formData, kode_saham: e.target.value })} placeholder="Misal: BBRI" />
                                         </div>
-                                    </div>
-
-                                    <div className="flex gap-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setShowUploadModal(false); setSelectedFile(null); }}
-                                            className="flex-1 px-8 py-4 border-2 border-gray-100 text-gray-500 font-black rounded-2xl hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
-                                        >
-                                            Batal
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            disabled={!selectedFile || uploading}
-                                            className="flex-2 px-10 py-4 bg-bri-blue text-white font-black rounded-2xl shadow-2xl shadow-bri-blue/30 hover:bg-blue-800 disabled:opacity-50 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
-                                        >
-                                            {uploading ? 'Memproses Data...' : 'Konfirmasi & Simpan'}
-                                            <ArrowRight size={18} />
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Nama Emiten</label>
+                                            <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.nama_emiten || ''} onChange={e => setFormData({ ...formData, nama_emiten: e.target.value })} placeholder="Bank Rakyat Indonesia" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Sektor</label>
+                                            <input className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.sektor || ''} onChange={e => setFormData({ ...formData, sektor: e.target.value })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Harga Terakhir</label>
+                                            <input type="number" className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.last_price || 0} onChange={e => setFormData({ ...formData, last_price: Number(e.target.value) })} />
+                                        </div>
+                                    </>
+                                )}
+                                {formType === 'proposal' && (
+                                    <>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Jenis Investasi</label>
+                                            <select required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.jenis_investasi || ''} onChange={e => setFormData({ ...formData, jenis_investasi: e.target.value })}>
+                                                <option value="">-- Pilih --</option>
+                                                <option value="SAHAM">SAHAM</option>
+                                                <option value="OBLIGASI">OBLIGASI</option>
+                                                <option value="REKSADANA">REKSADANA</option>
+                                                <option value="DEPOSITO">DEPOSITO</option>
+                                            </select>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Kode Efek / Isin</label>
+                                            <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.kode_efek || formData.kode_saham || ''} onChange={e => setFormData({ ...formData, kode_efek: e.target.value, kode_saham: e.target.value })} placeholder="Misal: BBRI / FR0080" />
+                                        </div>
+                                        <div className="col-span-2">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Nama Emiten / Seri</label>
+                                            <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.nama_emiten || ''} onChange={e => setFormData({ ...formData, nama_emiten: e.target.value })} placeholder="Bank Rakyat Indonesia / FR0080" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Tipe Transaksi</label>
+                                            <select className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.tipe_transaksi || 'BELI'} onChange={e => setFormData({ ...formData, tipe_transaksi: e.target.value })}>
+                                                <option value="BELI">BELI (BUY)</option>
+                                                <option value="JUAL">JUAL (SELL)</option>
+                                            </select>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Nominal Usulan (Rp)</label>
+                                            <input type="number" required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.nominal_usulan || ''} onChange={e => setFormData({ ...formData, nominal_usulan: Number(e.target.value) })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Range Harga / Yield</label>
+                                            <input className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.range_harga || ''} onChange={e => setFormData({ ...formData, range_harga: e.target.value })} placeholder="Misal: 4500-4700 / 6.5%" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Tanggal Proyeksi</label>
+                                            <input type="date" className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.tgl_proposal || ''} onChange={e => setFormData({ ...formData, tgl_proposal: e.target.value })} />
+                                        </div>
+                                    </>
+                                )}
+                                {formType === 'transaction' && (
+                                    <>
+                                        <div className="col-span-2">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Tautkan ke Proposal</label>
+                                            <select className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" onChange={e => {
+                                                const p = proposals.find(pr => pr.proposal_no === e.target.value);
+                                                if (p) {
+                                                    setFormData({
+                                                        ...formData,
+                                                        proposal_id: p.id,
+                                                        kode_efek: p.kode_efek,
+                                                        nama_emiten: p.nama_emiten,
+                                                        jenis_transaksi: p.tipe_transaksi === 'BELI' ? 'BUY' : 'SELL',
+                                                        nominal: p.nominal_usulan
+                                                    });
+                                                }
+                                            }}>
+                                                <option value="">-- Lewati Link Proposal --</option>
+                                                {proposals.filter(p => p.status_approval === 'APPROVED').map(p => <option key={p.id} value={p.proposal_no}>{p.proposal_no} ({p.kode_efek})</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Kode Efek</label>
+                                            <input required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.kode_efek || ''} onChange={e => setFormData({ ...formData, kode_efek: e.target.value })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Harga Per Unit / Lembar</label>
+                                            <input type="number" required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.harga_transaksi || ''} onChange={e => setFormData({ ...formData, harga_transaksi: Number(e.target.value) })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Lembar (Khusus Saham)</label>
+                                            <input type="number" className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.jumlah_lembar || ''} onChange={e => setFormData({ ...formData, jumlah_lembar: Number(e.target.value) })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Fee / Pajak</label>
+                                            <input type="number" className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.fee_broker || ''} onChange={e => setFormData({ ...formData, fee_broker: Number(e.target.value) })} />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Broker / Bank</label>
+                                            <input className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.sekuritas || ''} onChange={e => setFormData({ ...formData, sekuritas: e.target.value })} placeholder="Misal: BRIDS" />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Tgl Eksekusi</label>
+                                            <input type="date" required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" value={formData.tgl_transaksi?.split('T')[0] || ''} onChange={e => setFormData({ ...formData, tgl_transaksi: new Date(e.target.value).toISOString() })} />
+                                        </div>
+                                    </>
+                                )}
+                                {formType === 'action' && (
+                                    <>
+                                        <div className="col-span-2">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Saham</label>
+                                            <select required className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" onChange={e => setFormData({ ...formData, kode_saham: e.target.value })}>
+                                                <option value="">-- Pilih --</option>
+                                                {stocks.map(s => <option key={s.id} value={s.kode_saham}>{s.kode_saham}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Jenis Action</label>
+                                            <select className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" onChange={e => setFormData({ ...formData, jenis_action: e.target.value })}>
+                                                <option value="DIVIDEN_CASH">Dividend (Tunai)</option>
+                                                <option value="STOCK_SPLIT">Stock Split</option>
+                                                <option value="RIGHT_ISSUE">Right Issue / Warrant</option>
+                                            </select>
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block">Nominal Per Lembar (Jika Dividen)</label>
+                                            <input type="number" className="w-full px-4 py-3 bg-gray-50 rounded-xl border-none font-bold" onChange={e => setFormData({ ...formData, nominal_per_lembar: Number(e.target.value) })} />
+                                        </div>
+                                    </>
+                                )}
+                                <div className="col-span-2 flex gap-4 mt-8">
+                                    <button type="button" onClick={() => setShowFormModal(false)} className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-xs uppercase text-gray-400">Batal</button>
+                                    <button type="submit" className="flex-2 py-4 bg-bri-blue text-white rounded-2xl font-black text-xs uppercase shadow-xl shadow-bri-blue/30">Simpan Data</button>
+                                </div>
+                            </form>
                         </motion.div>
                     </div>
                 )}
